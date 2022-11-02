@@ -5,16 +5,17 @@ import java.awt.*;
 
 public class Main {
     public static void main(String[] args) {
-        JFrame window = new JFrame();
+        JFrame frame = new JFrame();
 
-        window.setTitle("bruh");
+        frame.setTitle("bruh");
 
         var content = new JPanel(true);
         content.add(new JLabel("Hello, world"));
         content.add(new JLabel("loooooooooooooooooooooong"));
         content.setLayout(new FlowLayout());
-        window.setContentPane(content);
+        frame.setContentPane(content);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        window.setVisible(true);
+        frame.setVisible(true);
     }
 }
