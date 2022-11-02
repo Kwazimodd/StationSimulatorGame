@@ -1,5 +1,52 @@
-# Compiled class file
+# Proteus
+*.workspace
+/**/Project Backups/
+
+# Qt
+*.user
+/**/build-*/
+
+# CLion
+/**/.idea/
+/**/cmake-build-*/
+
+# VS
+/**/.vs
+Debug/
+Release/
+bin/
+obj/
+app.db
+app.db-*
+
+# VS Code
+settings.json
+
+# Keil
+Objects/
+Listings/
+
+# Node.js
+package-lock.json
+
+# Notepad++
+*.bak
+
+# Teamwork
+EventTeamwork/
+
+# StationSimulatorGame
+StationSimulatorGame/
+
+# KPZ
+/KPZ/
+
+# Java
+build/
+out/
 *.class
+.gradle/
+gradle/
 
 # Log file
 *.log
