@@ -27,7 +27,7 @@ public class Main {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setVisible(true);
 
-        startRenderThread(canvas);
+        startRenderTimer(canvas);
 
         var spriteRegistry = SpriteRegistry.getInstance();
         DumbCircle magentaCircle = new DumbCircle(Color.magenta);
@@ -56,9 +56,7 @@ public class Main {
         spriteRegistry.registerSprite(greenCircle);
     }
 
-    private static void startRenderThread(GameCanvas canvas) {
-        new javax.swing.Timer(1000 / 60, event -> canvas.repaint()).start();
-
-        //new Thread(new RenderTimer(canvas), "Render thread").start();
+    private static void startRenderTimer(GameCanvas canvas) {
+        new RenderTimer(canvas).run();
     }
 }
