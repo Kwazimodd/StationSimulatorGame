@@ -1,15 +1,37 @@
 package ua.pz33;
 
-import java.awt.*;
+import ua.pz33.registries.SpriteRegistry;
 
-public class GameCanvas extends Canvas {
+import javax.swing.*;
+import java.awt.*;
+import java.util.Map;
+
+public class GameCanvas extends JPanel {
+
+    private final SpriteRegistry registry = SpriteRegistry.getInstance();
+
+    public GameCanvas(){
+        super(true);
+
+        this.setIgnoreRepaint(false);
+    }
 
     @Override
-    public void paint(Graphics g) {
-        super.paint(g);
+    public Dimension getPreferredSize() {
+        return new Dimension(200, 200);
+    }
 
-        g.drawString("Hello game", 5, 20);
-        g.setColor(Color.cyan);
-        g.fillArc(0, 50, 50, 50, 0, 90);
+    @Override
+    public void paintComponent(Graphics graphics) {
+        var g = (Graphics2D)graphics.create();
+
+        g.addRenderingHints(Map.of(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON));
+        g.clearRect(0, 0, getWidth(), getHeight());
+
+        for (var sprite : registry.getRegisteredSprites()) {
+            sprite.paint(g);
+        }
+
+        g.dispose();
     }
 }
