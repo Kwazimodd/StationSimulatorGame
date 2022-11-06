@@ -1,13 +1,14 @@
 package ua.pz33;
 
 import org.jetbrains.annotations.NotNull;
-import ua.pz33.timers.RenderTimer;
+import ua.pz33.utils.logs.LogDestination;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class MainFrame extends JFrame {
     private GameCanvas canvas;
+    private LogDestination uiLogDestination;
 
     public MainFrame() {
         setTitle("Bruh");
@@ -22,7 +23,8 @@ public class MainFrame extends JFrame {
         var content = new JPanel(true);
         content.setLayout(new GridBagLayout());
 
-        var logsPanel = new LogsPanel();
+        LogsPanel logsPanel = new LogsPanel();
+        uiLogDestination = logsPanel;
         var c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
@@ -49,5 +51,9 @@ public class MainFrame extends JFrame {
 
     public GameCanvas getCanvas() {
         return canvas;
+    }
+
+    public LogDestination getUiLogDestination() {
+        return uiLogDestination;
     }
 }

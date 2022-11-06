@@ -3,9 +3,10 @@ package ua.pz33;
 import ua.pz33.registries.SpriteRegistry;
 import ua.pz33.sprites.DumbCircle;
 import ua.pz33.timers.RenderTimer;
+import ua.pz33.utils.logs.LogMediator;
 
-import javax.swing.*;
 import java.awt.*;
+import java.time.LocalDateTime;
 
 public class Main {
     public static void main(String[] args) {
@@ -13,8 +14,14 @@ public class Main {
         frame.setVisible(true);
 
         RenderTimer.getInstance().setCanvasAndStart(frame.getCanvas());
+        LogMediator.getInstance().addDestination(message -> System.out.println(LocalDateTime.now() + ": " + message));
+        LogMediator.getInstance().addDestination(frame.getUiLogDestination());
 
-        initializeSprites();
+
+        // Invoke on Main thread
+        EventQueue.invokeLater(Main::initializeSprites);
+
+        LogMediator.getInstance().logMessage("Game started");
     }
 
     private static void initializeSprites() {
