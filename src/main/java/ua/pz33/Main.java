@@ -2,6 +2,7 @@ package ua.pz33;
 
 import ua.pz33.registries.SpriteRegistry;
 import ua.pz33.sprites.DumbCircle;
+import ua.pz33.sprites.ImageSprite;
 import ua.pz33.timers.RenderTimer;
 import ua.pz33.utils.configuration.ConfigurationMediator;
 import ua.pz33.utils.logs.LogMediator;
@@ -47,10 +48,14 @@ public class Main {
         greenCircle.setZIndex(7);
         greenCircle.setBounds(new Rectangle(55, 45, 90, 90));
 
+        ImageSprite dumbDude = new ImageSprite("BodyVIP200X200.png", 15);
+        dumbDude.setBounds(new Rectangle(55, 45, 90, 90));
+
         spriteRegistry.registerSprite(magentaCircle);
         spriteRegistry.registerSprite(orangeCircle);
         spriteRegistry.registerSprite(pinkCircle);
         spriteRegistry.registerSprite(blueCircle);
         spriteRegistry.registerSprite(greenCircle);
+        spriteRegistry.registerSprite(dumbDude);
     }
 }
