@@ -1,5 +1,7 @@
 package ua.pz33.generators;
 
+import ua.pz33.utils.configuration.PropertyRegistry;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -14,19 +16,11 @@ public class ClientGenerator
     private final int maxAmountOfClients;
     public int clientCount = 0;
 
-    public ClientGenerator(int x, int y, int spawnRateInSeconds, int maxAmount)
+    public ClientGenerator()
     {
-        position = new Point(x,y);
-        maxAmountOfClients = maxAmount;
-        timer = new Timer(spawnRateInSeconds*1000,this::SpawnClient);
-        timer.start();
-    }
-
-    public ClientGenerator(int x, int y, int maxAmount)
-    {
-        position = new Point(x,y);
-        maxAmountOfClients = maxAmount;
-        timer = new Timer(1000,this::SpawnClient);
+        position = PropertyRegistry.ENTRANCE_POSITION;
+        maxAmountOfClients = PropertyRegistry.MAX_AMOUNT_OF_CLIENTS;
+        timer = new Timer(PropertyRegistry.CLIENT_SPAWN_RATE*1000,this::SpawnClient);
         timer.start();
     }
 
@@ -70,9 +64,9 @@ public class ClientGenerator
         }
     }
 
-    public void ChangeSpawnRate(int newSpawnRate)
+    public void UpdateSpawnRate()
     {
-        timer = new Timer(newSpawnRate*1000,this::SpawnClient);
+        timer = new Timer(PropertyRegistry.CLIENT_SPAWN_RATE * 1000,this::SpawnClient);
         timer.start();
     }
 }
