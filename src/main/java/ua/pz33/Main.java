@@ -3,6 +3,7 @@ package ua.pz33;
 import ua.pz33.registries.SpriteRegistry;
 import ua.pz33.sprites.DumbCircle;
 import ua.pz33.timers.RenderTimer;
+import ua.pz33.utils.configuration.ConfigurationMediator;
 import ua.pz33.utils.logs.LogMediator;
 
 import java.awt.*;
@@ -17,6 +18,7 @@ public class Main {
         LogMediator.getInstance().addDestination(message -> System.out.println(LocalDateTime.now() + ": " + message));
         LogMediator.getInstance().addDestination(frame.getUiLogDestination());
 
+        ConfigurationMediator.getInstance().addListener(pArgs -> LogMediator.getInstance().logMessage("Property " + pArgs.getPropertyName() + " has changed from '" + pArgs.getOldValue() + "' to '" + pArgs.getNewValue() + "'"));
 
         // Invoke on Main thread
         EventQueue.invokeLater(Main::initializeSprites);

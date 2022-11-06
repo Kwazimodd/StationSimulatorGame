@@ -12,7 +12,7 @@ public class MainFrame extends JFrame {
 
     public MainFrame() {
         setTitle("Bruh");
-        setBounds(100, 100, 1200, 600);
+        setBounds(100, 100, 1400, 600);
         setContentPane(initializeComponents());
         setResizable(false);
 
@@ -29,13 +29,14 @@ public class MainFrame extends JFrame {
         c.gridx = 0;
         c.gridy = 0;
         c.fill = GridBagConstraints.BOTH;
-        c.weightx = 1;
+        c.weightx = 2;
         content.add(logsPanel, c);
 
         canvas = createGameCanvas();
         content.add(canvas);
 
         var configPanel = new ConfigPanel();
+        c.weightx = 1;
         c.gridx = 2;
         content.add(configPanel, c);
 

@@ -16,7 +16,6 @@ public class LogsPanel extends JPanel implements LogDestination {
 
     private void initializeContent() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setPreferredSize(new Dimension(300, 600));
 
         JLabel logsLabel = new JLabel("Logs");
         logsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
