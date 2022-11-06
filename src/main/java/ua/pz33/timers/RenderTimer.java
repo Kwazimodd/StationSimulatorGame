@@ -7,19 +7,28 @@ import ua.pz33.utils.AmazingStopwatch;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-public class RenderTimer implements Runnable {
+public class RenderTimer {
+    private static final boolean PRINT_FRAME_TIMES = false;
 
     private static final int TARGET_FPS = 60;
 
-    private final GameCanvas canvas;
+    private GameCanvas canvas;
     private final Timer timer;
 
     private boolean isPaused = false;
     private final AmazingStopwatch stopwatch = new AmazingStopwatch();
 
-    public RenderTimer(GameCanvas canvas) {
-        this.canvas = canvas;
+    private static RenderTimer instance;
 
+    public static RenderTimer getInstance() {
+        if (instance == null) {
+            instance = new RenderTimer();
+        }
+
+        return instance;
+    }
+
+    private RenderTimer() {
         timer = new Timer(1000 / TARGET_FPS, this::onTimerTick);
     }
 
@@ -28,11 +37,14 @@ public class RenderTimer implements Runnable {
         canvas.repaint();
         stopwatch.stop();
 
-        System.out.println("Rendered frame in " + stopwatch.elapsedLong() + " ns");
+        if (PRINT_FRAME_TIMES) {
+            System.out.println("Rendered frame in " + stopwatch.elapsedLong() + " ns");
+        }
     }
 
-    @Override
-    public void run() {
+    public void setCanvasAndStart(GameCanvas canvas) {
+        this.canvas = canvas;
+
         timer.start();
     }
 }
