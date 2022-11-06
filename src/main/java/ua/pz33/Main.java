@@ -3,32 +3,30 @@ package ua.pz33;
 import ua.pz33.registries.SpriteRegistry;
 import ua.pz33.sprites.DumbCircle;
 import ua.pz33.timers.RenderTimer;
+import ua.pz33.utils.configuration.ConfigurationMediator;
+import ua.pz33.utils.logs.LogMediator;
 
-import javax.swing.*;
 import java.awt.*;
+import java.time.LocalDateTime;
 
 public class Main {
     public static void main(String[] args) {
-        JFrame frame = new JFrame();
-
-        frame.setTitle("bruh");
-        frame.setBounds(100, 100, 400, 200);
-
-        var canvas = new GameCanvas();
-        canvas.setBounds(0, 0, 200, 200);
-
-        var content = new JPanel(true);
-        content.add(new JLabel("Hello, world"));
-        content.add(canvas);
-        content.add(new JLabel("loooooooooooooooooooooong"));
-        content.setLayout(new FlowLayout());
-        frame.setContentPane(content);
-
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        MainFrame frame = new MainFrame();
         frame.setVisible(true);
 
-        startRenderTimer(canvas);
+        RenderTimer.getInstance().setCanvasAndStart(frame.getCanvas());
+        LogMediator.getInstance().addDestination(message -> System.out.println(LocalDateTime.now() + ": " + message));
+        LogMediator.getInstance().addDestination(frame.getUiLogDestination());
 
+        ConfigurationMediator.getInstance().addListener(pArgs -> LogMediator.getInstance().logMessage("Property " + pArgs.getPropertyName() + " has changed from '" + pArgs.getOldValue() + "' to '" + pArgs.getNewValue() + "'"));
+
+        // Invoke on Main thread
+        EventQueue.invokeLater(Main::initializeSprites);
+
+        LogMediator.getInstance().logMessage("Game started");
+    }
+
+    private static void initializeSprites() {
         var spriteRegistry = SpriteRegistry.getInstance();
         DumbCircle magentaCircle = new DumbCircle(Color.magenta);
         magentaCircle.setBounds(new Rectangle(50, 50, 50, 50));
@@ -54,9 +52,5 @@ public class Main {
         spriteRegistry.registerSprite(pinkCircle);
         spriteRegistry.registerSprite(blueCircle);
         spriteRegistry.registerSprite(greenCircle);
-    }
-
-    private static void startRenderTimer(GameCanvas canvas) {
-        new RenderTimer(canvas).run();
     }
 }
