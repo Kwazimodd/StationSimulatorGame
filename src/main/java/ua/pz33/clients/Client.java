@@ -18,7 +18,11 @@ public class Client {
     }
 
     public void buyTickets(){
-        LogMediator.getInstance().logMessage(String.format("Client %d bought %d tickets", id, countOfTickets));
+        var message = String.format("Client %d bought %d tickets", id, countOfTickets);
+        LogMediator.getInstance().logMessage(message);
+
+        //todo remove this println
+        System.out.println(message);
     }
 
     public void chooseCashRegister(List<CashRegister> cashRegisters){

@@ -2,6 +2,7 @@ import org.junit.jupiter.api.Assertions;
 import ua.pz33.cashregisters.CashRegister;
 import ua.pz33.clients.Client;
 import ua.pz33.clients.ClientStatus;
+import ua.pz33.utils.clock.GameClock;
 
 class CashRegisterTest {
 
@@ -23,5 +24,17 @@ class CashRegisterTest {
         Assertions.assertTrue(cashRegister.getClientsQueue().poll().getStatus() == ClientStatus.HAS_KIDS);
         Assertions.assertTrue(cashRegister.getClientsQueue().poll().getId() == 1);
         Assertions.assertTrue(cashRegister.getClientsQueue().poll().getStatus() == ClientStatus.REGULAR);
+    }
+
+    @org.junit.jupiter.api.Test
+    void serviceClients() {
+        var gameClock = GameClock.getInstance();
+        gameClock.startTimer();
+
+        CashRegister cashRegister = new CashRegister();
+        cashRegister.tryAddToQueue(new Client(1, 3000, ClientStatus.REGULAR));
+
+        cashRegister.service();
+        Assertions.assertTrue(cashRegister.getClientsQueue().isEmpty());
     }
 }

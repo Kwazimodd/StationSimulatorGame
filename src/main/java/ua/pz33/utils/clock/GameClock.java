@@ -11,7 +11,6 @@ public class GameClock {
     private final List<WeakReference<ClockObserver>> observers = new ArrayList<>();
     private final Thread clockThread;
 
-
     private static GameClock instance;
 
     public GameClock() {
@@ -36,6 +35,20 @@ public class GameClock {
             }
 
         }
+    }
+
+    public void postExecute(int seconds, Runnable function){
+        long currMillis = System.currentTimeMillis() - 100;
+        var delta = System.currentTimeMillis() - currMillis;
+        var toSleep = seconds * 10000L / TICKS_PER_SECOND;
+        currMillis = System.currentTimeMillis();
+
+        try {
+            Thread.sleep(toSleep);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        function.run();
     }
 
     public static GameClock getInstance() {
