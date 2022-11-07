@@ -9,12 +9,29 @@ public class CashRegister {
     private PriorityQueue<Client> clientsQueue = new PriorityQueue<>(statusComparator);
     private boolean isOpen = true;
 
-    public void addToQueue(Client client){
+    public CashRegister(){
+
+    }
+
+    public CashRegister(PriorityQueue<Client> oldQueue){
+        clientsQueue = oldQueue;
+    }
+
+    public boolean tryAddToQueue(Client client){
+        if (!isOpen){
+            return false;
+        }
+
         clientsQueue.add(client);
+        return true;
     }
 
     public void service(){
+        //// TODO: 07.11.2022 add time for client service from configuration
 
+        var currentClient = clientsQueue.poll();
+        //wait some fixed time;
+        currentClient.buyTickets();
     }
 
     public PriorityQueue<Client> getClientsQueue(){

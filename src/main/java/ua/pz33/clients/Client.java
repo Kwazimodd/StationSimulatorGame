@@ -1,22 +1,49 @@
 package ua.pz33.clients;
 
+import ua.pz33.cashregisters.CashRegister;
+import ua.pz33.utils.logs.LogMediator;
+
+import java.util.Comparator;
+import java.util.List;
+
 public class Client {
     private Integer id;
-    private Float money;
+    private Integer countOfTickets;
     private ClientStatus status;
 
-    public Client(int id, float money, ClientStatus status){
+    public Client(int id, int countOfTickets, ClientStatus status){
         this.id = id;
-        this.money = money;
+        this.countOfTickets = countOfTickets;
         this.status = status;
     }
+
+    public void buyTickets(){
+        LogMediator.getInstance().logMessage(String.format("Client %d bought %d tickets", id, countOfTickets));
+    }
+
+    public void chooseCashRegister(List<CashRegister> cashRegisters){
+        //check if all cash registers have same number of people in queue
+        var sortedCashRegisters = cashRegisters.stream().filter(c -> c.isOpen()).sorted(countInQueueComparator).toList();
+
+        var firstCashRegister =sortedCashRegisters.get(0);
+        var count = firstCashRegister.getClientsQueue().size();
+        var allHaveSameCount = sortedCashRegisters.stream().allMatch(c -> c.getClientsQueue().size() == count);
+
+        if(allHaveSameCount){
+            //todo choose the closest
+            //cashRegister.addToQueue(this);
+        }
+        firstCashRegister.tryAddToQueue(this);
+    }
+
+    public static Comparator<CashRegister> countInQueueComparator = (c1, c2) -> (int) (c1.getClientsQueue().size() - c2.getClientsQueue().size());
 
     public Integer getId() {
         return id;
     }
 
-    public Float getMoney() {
-        return money;
+    public Integer getCountOfTickets() {
+        return countOfTickets;
     }
 
     public ClientStatus getStatus() {
