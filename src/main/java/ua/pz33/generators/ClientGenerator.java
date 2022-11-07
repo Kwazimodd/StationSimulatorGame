@@ -1,5 +1,6 @@
 package ua.pz33.generators;
 
+import ua.pz33.utils.configuration.ConfigurationMediator;
 import ua.pz33.utils.configuration.PropertyRegistry;
 
 import javax.swing.*;
@@ -18,9 +19,9 @@ public class ClientGenerator
 
     public ClientGenerator()
     {
-        position = PropertyRegistry.ENTRANCE_POSITION;
-        maxAmountOfClients = PropertyRegistry.MAX_AMOUNT_OF_CLIENTS;
-        timer = new Timer(PropertyRegistry.CLIENT_SPAWN_RATE*1000,this::SpawnClient);
+        position = (Point) ConfigurationMediator.getInstance().getValue(PropertyRegistry.ENTRANCE_POSITION);
+        maxAmountOfClients = (int) ConfigurationMediator.getInstance().getValue(PropertyRegistry.MAX_AMOUNT_OF_CLIENTS);
+        timer = new Timer((int) ConfigurationMediator.getInstance().getValue(PropertyRegistry.CLIENT_SPAWN_RATE),this::SpawnClient);
         timer.start();
     }
 
@@ -66,7 +67,7 @@ public class ClientGenerator
 
     public void UpdateSpawnRate()
     {
-        timer = new Timer(PropertyRegistry.CLIENT_SPAWN_RATE * 1000,this::SpawnClient);
+        timer = new Timer((int) ConfigurationMediator.getInstance().getValue(PropertyRegistry.CLIENT_SPAWN_RATE),this::SpawnClient);
         timer.start();
     }
 }
