@@ -1,73 +1,99 @@
 package ua.pz33.generators;
 
+import ua.pz33.utils.clock.ClockObserver;
 import ua.pz33.utils.configuration.ConfigurationMediator;
+import ua.pz33.utils.configuration.PropertyChangedEventArgs;
 import ua.pz33.utils.configuration.PropertyRegistry;
+import ua.pz33.utils.logs.LogMediator;
 
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.util.Random;
 
 
-public class ClientGenerator
-{
+public class ClientGenerator implements ClockObserver {
     private final Point position;
-    public Timer timer;
+    private final Random random = new Random(System.currentTimeMillis());
     private boolean isPaused = false;
     private final int maxAmountOfClients;
     public int clientCount = 0;
+    private int ticksPerClient;
 
-    public ClientGenerator()
-    {
-        position = (Point) ConfigurationMediator.getInstance().getValueOrDefault(PropertyRegistry.ENTRANCE_POSITION,new Point(0,0));
-        maxAmountOfClients = (int) ConfigurationMediator.getInstance().getValueOrDefault(PropertyRegistry.MAX_AMOUNT_OF_CLIENTS,20);
-        timer = new Timer((int) ConfigurationMediator.getInstance().getValueOrDefault(PropertyRegistry.CLIENT_SPAWN_RATE,500),this::SpawnClient);
-        timer.start();
+    private static ClientGenerator instance;
+
+    public static ClientGenerator getInstance() {
+        if (instance == null) {
+            instance = new ClientGenerator();
+        }
+
+        return instance;
     }
 
-    public void SpawnClient(ActionEvent event)
-    {
-        if (!isPaused)
-        {
-            int a = new Random().nextInt(10);
-            if (a < 5)
-            {
+    private ClientGenerator() {
+        position = (Point) config().getValueOrDefault(PropertyRegistry.ENTRANCE_POSITION, new Point(0, 0));
+        maxAmountOfClients = (int) config().getValueOrDefault(PropertyRegistry.MAX_AMOUNT_OF_CLIENTS, 20);
+        ticksPerClient = (int) config().getValueOrDefault(PropertyRegistry.TICKS_PER_CLIENT, 20);
+
+        config().addListener(this::configUpdated);
+    }
+
+    private static ConfigurationMediator config() {
+        return ConfigurationMediator.getInstance();
+    }
+
+    public void spawnClient() {
+        if (!isPaused) {
+            int a = random.nextInt(10);
+            if (a < 5) {
                 //50%
                 //spawn normal client in pos (x-100,y-100)
-            }
-            else if (a < 7)
-            {
+                LogMediator.getInstance().logMessage("Spawned a normal client");
+            } else if (a < 7) {
                 //20%
                 //spawn exempt client in pos (x-100,y-100)
-            }
-            else if (a<9)
-            {
+                LogMediator.getInstance().logMessage("Spawned a client with special needs");
+            } else if (a < 9) {
                 //20%
                 //spawn client with children in pos (x-100,y-100)
-            }
-            else
-            {
+
+                LogMediator.getInstance().logMessage("Spawned a client with children");
+            } else {
                 //10%
                 //spawn VIP client in pos (x-100,y-100)
+                LogMediator.getInstance().logMessage("Spawned a VIP client");
             }
 
             clientCount++;
         }
 
-        if (clientCount >= maxAmountOfClients)
-        {
+        if (clientCount >= maxAmountOfClients) {
             isPaused = true;
         }
 
-        if (isPaused && clientCount < maxAmountOfClients / 70)
-        {
+        if (isPaused && clientCount < maxAmountOfClients / 70) {
             isPaused = false;
         }
     }
 
-    public void UpdateSpawnRate()
-    {
-        timer = new Timer((int) ConfigurationMediator.getInstance().getValue(PropertyRegistry.CLIENT_SPAWN_RATE),this::SpawnClient);
-        timer.start();
+    public void updateSpawnRate(int newValue) {
+        ticksPerClient = newValue;
+    }
+
+    private void configUpdated(PropertyChangedEventArgs args) {
+        if (args.getPropertyName().equals(PropertyRegistry.TICKS_PER_CLIENT)) {
+            updateSpawnRate((int) args.getNewValue());
+        }
+    }
+
+    private int tickCount = 0;
+
+    @Override
+    public void onTick() {
+        tickCount++;
+
+        tickCount %= ticksPerClient;
+
+        if (tickCount == 0) {
+            spawnClient();
+        }
     }
 }
