@@ -29,8 +29,8 @@ public class CashRegister {
     public void service(){
         //// TODO: 07.11.2022 add time for client service from configuration
 
-        var currentClient = clientsQueue.poll();
         //wait some fixed time;
+        var currentClient = clientsQueue.poll();
         currentClient.buyTickets();
     }
 
@@ -38,7 +38,14 @@ public class CashRegister {
         return clientsQueue;
     }
 
-    public static Comparator<Client> statusComparator = (c1, c2) -> (int) (c1.getStatus().compareTo(c2.getStatus()));
+    public static Comparator<Client> statusComparator = (c1, c2) -> {
+        var statusCompareResult = (int) (c1.getStatus().compareTo(c2.getStatus()));
+        if(statusCompareResult == 0){
+            return (int) (c1.getId().compareTo(c2.getId()));
+        }
+
+        return statusCompareResult;
+    };
 
     public void open(){
         isOpen = true;

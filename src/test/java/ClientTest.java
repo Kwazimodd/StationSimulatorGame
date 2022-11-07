@@ -1,8 +1,8 @@
-package ua.pz33.clients;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ua.pz33.cashregisters.CashRegister;
+import ua.pz33.clients.Client;
+import ua.pz33.clients.ClientStatus;
 
 import java.util.ArrayList;
 
