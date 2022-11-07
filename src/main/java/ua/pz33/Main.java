@@ -1,9 +1,11 @@
 package ua.pz33;
 
+import ua.pz33.generators.ClientGenerator;
 import ua.pz33.registries.SpriteRegistry;
 import ua.pz33.sprites.DumbCircle;
 import ua.pz33.sprites.ImageSprite;
 import ua.pz33.timers.RenderTimer;
+import ua.pz33.utils.clock.GameClock;
 import ua.pz33.utils.configuration.ConfigurationMediator;
 import ua.pz33.utils.logs.LogMediator;
 
@@ -23,6 +25,9 @@ public class Main {
 
         // Invoke on Main thread
         EventQueue.invokeLater(Main::initializeSprites);
+
+        GameClock.getInstance().addObserver(ClientGenerator.getInstance());
+        GameClock.getInstance().startTimer();
 
         LogMediator.getInstance().logMessage("Game started");
     }

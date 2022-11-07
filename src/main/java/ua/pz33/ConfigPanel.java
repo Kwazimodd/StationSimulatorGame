@@ -1,11 +1,10 @@
 package ua.pz33;
 
 import ua.pz33.utils.configuration.ConfigurationMediator;
+import ua.pz33.utils.configuration.PropertyRegistry;
 
 import javax.swing.*;
 import java.awt.*;
-
-import static ua.pz33.utils.configuration.PropertyRegistry.DUMB_ASS_SHIT_PROPERTY;
 
 public class ConfigPanel extends JPanel {
     public ConfigPanel() {
@@ -22,21 +21,21 @@ public class ConfigPanel extends JPanel {
         configLabel.setAlignmentX(LEFT_ALIGNMENT);
         configLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 12, 12));
 
-        JLabel dasLabel = new JLabel("das property");
+        JLabel dasLabel = new JLabel("Tick per client spawn");
         dasLabel.setAlignmentX(LEFT_ALIGNMENT);
 
 
-        JTextField bruuh = new JTextField("bruuh");
-        bruuh.setAlignmentX(LEFT_ALIGNMENT);
-        bruuh.setMaximumSize(new Dimension(Integer.MAX_VALUE, bruuh.getPreferredSize().height));
+        JTextField ticksPerClientField = new JTextField("20");
+        ticksPerClientField.setAlignmentX(LEFT_ALIGNMENT);
+        ticksPerClientField.setMaximumSize(new Dimension(Integer.MAX_VALUE, ticksPerClientField.getPreferredSize().height));
 
         var save = new JButton("Save");
         save.setAlignmentX(LEFT_ALIGNMENT);
-        save.addActionListener(e -> configs().setValue(DUMB_ASS_SHIT_PROPERTY, bruuh.getText()));
+        save.addActionListener(e -> configs().setValue(PropertyRegistry.TICKS_PER_CLIENT, Integer.parseInt(ticksPerClientField.getText())));
 
         add(configLabel);
         add(dasLabel);
-        add(bruuh);
+        add(ticksPerClientField);
         add(save);
     }
 
