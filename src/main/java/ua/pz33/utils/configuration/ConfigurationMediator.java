@@ -50,6 +50,10 @@ public class ConfigurationMediator {
     }
 
     public Object getValueOrDefault(@MagicConstant(valuesFromClass = PropertyRegistry.class) String property, Object defaultValue) {
-        return properties.getOrDefault(property, defaultValue);
+        if (!properties.containsKey(property)) {
+            setValue(property, defaultValue);
+        }
+
+        return getValue(property);
     }
 }
