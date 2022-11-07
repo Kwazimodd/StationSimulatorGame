@@ -19,9 +19,9 @@ public class ClientGenerator
 
     public ClientGenerator()
     {
-        position = (Point) ConfigurationMediator.getInstance().getValue(PropertyRegistry.ENTRANCE_POSITION);
-        maxAmountOfClients = (int) ConfigurationMediator.getInstance().getValue(PropertyRegistry.MAX_AMOUNT_OF_CLIENTS);
-        timer = new Timer((int) ConfigurationMediator.getInstance().getValue(PropertyRegistry.CLIENT_SPAWN_RATE),this::SpawnClient);
+        position = (Point) ConfigurationMediator.getInstance().getValueOrDefault(PropertyRegistry.ENTRANCE_POSITION,new Point(0,0));
+        maxAmountOfClients = (int) ConfigurationMediator.getInstance().getValueOrDefault(PropertyRegistry.MAX_AMOUNT_OF_CLIENTS,20);
+        timer = new Timer((int) ConfigurationMediator.getInstance().getValueOrDefault(PropertyRegistry.CLIENT_SPAWN_RATE,500),this::SpawnClient);
         timer.start();
     }
 
