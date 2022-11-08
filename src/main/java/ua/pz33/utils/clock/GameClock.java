@@ -36,19 +36,9 @@ public class GameClock {
 
         }
     }
-
-    public void postExecute(int seconds, Runnable function){
-        long currMillis = System.currentTimeMillis() - 100;
-        var delta = System.currentTimeMillis() - currMillis;
-        var toSleep = seconds * 10000L / TICKS_PER_SECOND;
-        currMillis = System.currentTimeMillis();
-
-        try {
-            Thread.sleep(toSleep);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        function.run();
+    public void postExecute(int ticks, Runnable function){
+        var postExecuteObserver = new PostExecuteObserver(ticks, function);
+        addObserver(postExecuteObserver);
     }
 
     public static GameClock getInstance() {
@@ -82,6 +72,25 @@ public class GameClock {
             }
 
             observer.onTick();
+        }
+    }
+
+    class PostExecuteObserver implements  ClockObserver{
+        private int tickToRun;
+        private int currentTick = 0;
+        private Runnable function;
+        public PostExecuteObserver(int ticks, Runnable function){
+            this.tickToRun = ticks;
+            this.function = function;
+        }
+        @Override
+        public void onTick() {
+            currentTick++;
+
+            if(currentTick == tickToRun){
+                function.run();
+                observers.remove(this);
+            }
         }
     }
 }
