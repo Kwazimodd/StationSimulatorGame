@@ -1,7 +1,10 @@
 package ua.pz33;
 
 import ua.pz33.generators.ClientGenerator;
-import ua.pz33.registries.SpriteRegistry;
+import ua.pz33.rendering.SpriteRegistry;
+import ua.pz33.rendering.animation.Animation;
+import ua.pz33.rendering.animation.AnimationController;
+import ua.pz33.rendering.animation.interpolation.Interpolators;
 import ua.pz33.sprites.DumbCircle;
 import ua.pz33.sprites.ImageSprite;
 import ua.pz33.timers.RenderTimer;
@@ -55,6 +58,15 @@ public class Main {
 
         ImageSprite dumbDude = new ImageSprite("BodyVIP200X200.png", 15);
         dumbDude.setBounds(new Rectangle(55, 45, 90, 90));
+
+        var anim = new Animation.Builder()
+                .withBounds(55, 255)
+                .withProperty((s, v) -> s.setX((int) v))
+                .withDuration(2500)
+                .withInterpolator(Interpolators.CUBIC)
+                .build();
+
+        AnimationController.getInstance().beginAnimation(greenCircle, anim);
 
         spriteRegistry.registerSprite(magentaCircle);
         spriteRegistry.registerSprite(orangeCircle);

@@ -1,7 +1,7 @@
 package ua.pz33.timers;
 
-import org.jetbrains.annotations.NotNull;
-import ua.pz33.GameCanvas;
+import ua.pz33.rendering.GameCanvas;
+import ua.pz33.rendering.animation.AnimationController;
 import ua.pz33.utils.AmazingStopwatch;
 
 import javax.swing.*;
@@ -34,6 +34,7 @@ public class RenderTimer {
 
     private void onTimerTick(ActionEvent event) {
         stopwatch.start();
+        AnimationController.getInstance().animationStep();
         canvas.repaint();
         stopwatch.stop();
 
