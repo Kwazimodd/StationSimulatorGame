@@ -18,8 +18,8 @@ public class AnimationController {
 
     private final List<AnimationRecord> activeAnimations = new ArrayList<>();
 
-    public void beginAnimation(Sprite onSprite, Animation animation) {
-        activeAnimations.add(new AnimationRecord(onSprite, animation));
+    public void beginAnimation(Sprite onSprite, Storyboard storyboard) {
+        activeAnimations.add(new AnimationRecord(onSprite, storyboard));
     }
 
     public void animationStep() {
@@ -32,7 +32,7 @@ public class AnimationController {
         for (int i = 0; i < activeAnimations.size() - deletedCount; i++) {
             var animationRecord = activeAnimations.get(i);
 
-            var animationFinished = animationRecord.animation.step(animationRecord.sprite, animationRecord.deltaMs());
+            var animationFinished = animationRecord.storyboard.step(animationRecord.sprite, animationRecord.deltaMs());
 
             if (animationFinished) {
                 activeAnimations.remove(animationRecord);
@@ -46,12 +46,12 @@ public class AnimationController {
 
     private static class AnimationRecord {
         Sprite sprite;
-        Animation animation;
+        Storyboard storyboard;
         long startTimeMs;
 
-        public AnimationRecord(Sprite sprite, Animation animation) {
+        public AnimationRecord(Sprite sprite, Storyboard storyboard) {
             this.sprite = sprite;
-            this.animation = animation;
+            this.storyboard = storyboard;
 
             startTimeMs = System.currentTimeMillis();
         }

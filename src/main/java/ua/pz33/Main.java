@@ -2,11 +2,13 @@ package ua.pz33;
 
 import ua.pz33.generators.ClientGenerator;
 import ua.pz33.rendering.SpriteRegistry;
-import ua.pz33.rendering.animation.Animation;
 import ua.pz33.rendering.animation.AnimationController;
+import ua.pz33.rendering.animation.IntAnimation;
+import ua.pz33.rendering.animation.Storyboard;
 import ua.pz33.rendering.animation.interpolation.Interpolators;
 import ua.pz33.sprites.DumbCircle;
 import ua.pz33.sprites.ImageSprite;
+import ua.pz33.sprites.Sprite;
 import ua.pz33.timers.RenderTimer;
 import ua.pz33.utils.clock.GameClock;
 import ua.pz33.utils.configuration.ConfigurationMediator;
@@ -59,11 +61,18 @@ public class Main {
         ImageSprite dumbDude = new ImageSprite("BodyVIP200X200.png", 15);
         dumbDude.setBounds(new Rectangle(55, 45, 90, 90));
 
-        var anim = new Animation.Builder()
-                .withBounds(55, 255)
-                .withProperty((s, v) -> s.setX((int) v))
+        var anim = new Storyboard.Builder()
                 .withDuration(2500)
                 .withInterpolator(Interpolators.CUBIC)
+                .withAnimations(
+                        new IntAnimation.Builder()
+                                .withBounds(55, 255)
+                                .withProperty(Sprite::setX)
+                                .build(),
+                        new IntAnimation.Builder()
+                                .withBounds(45, 445)
+                                .withProperty(Sprite::setY)
+                                .build())
                 .build();
 
         AnimationController.getInstance().beginAnimation(greenCircle, anim);
