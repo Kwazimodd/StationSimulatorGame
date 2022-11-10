@@ -62,18 +62,19 @@ public class Main {
         dumbDude.setBounds(new Rectangle(55, 45, 90, 90));
 
         var anim = new Storyboard.Builder()
-                .withDuration(2500)
-                .withInterpolator(Interpolators.CUBIC)
+                .withDuration(800)
+                .withInterpolator(Interpolators.SIN_PI_X_HALF)
                 .withAnimations(
                         new IntAnimation.Builder()
-                                .withBounds(55, 255)
+                                .withBounds(155, 255)
                                 .withProperty(Sprite::setX)
                                 .build(),
                         new IntAnimation.Builder()
-                                .withBounds(45, 445)
+                                .withBounds(145, 245)
                                 .withProperty(Sprite::setY)
                                 .build())
                 .build();
+
 
         AnimationController.getInstance().beginAnimation(greenCircle, anim);
 
