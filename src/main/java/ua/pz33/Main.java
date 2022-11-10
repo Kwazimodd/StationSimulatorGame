@@ -1,6 +1,7 @@
 package ua.pz33;
 
 import ua.pz33.generators.ClientGenerator;
+import ua.pz33.rendering.RenderTimer;
 import ua.pz33.rendering.SpriteRegistry;
 import ua.pz33.rendering.animation.AnimationController;
 import ua.pz33.rendering.animation.IntAnimation;
@@ -9,7 +10,6 @@ import ua.pz33.rendering.animation.interpolation.Interpolators;
 import ua.pz33.sprites.DumbCircle;
 import ua.pz33.sprites.ImageSprite;
 import ua.pz33.sprites.Sprite;
-import ua.pz33.timers.RenderTimer;
 import ua.pz33.utils.clock.GameClock;
 import ua.pz33.utils.configuration.ConfigurationMediator;
 import ua.pz33.utils.logs.LogMediator;
