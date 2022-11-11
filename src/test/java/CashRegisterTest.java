@@ -35,6 +35,11 @@ class CashRegisterTest {
         cashRegister.tryAddToQueue(new Client(1, 3000, ClientStatus.REGULAR));
 
         cashRegister.service();
+        try {
+            Thread.sleep(6000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         Assertions.assertTrue(cashRegister.getClientsQueue().isEmpty());
     }
 }

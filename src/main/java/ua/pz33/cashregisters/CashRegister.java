@@ -8,7 +8,7 @@ import java.util.PriorityQueue;
 
 public class CashRegister {
     private PriorityQueue<Client> clientsQueue = new PriorityQueue<>(statusComparator);
-    private int secondsToServeClient = 10;
+    private int ticksToServeClient = 50;
     private boolean isOpen = true;
 
     public CashRegister(){
@@ -29,9 +29,9 @@ public class CashRegister {
     }
 
     public void service(){
-        //// TODO: 07.11.2022 add time for client service from configuration
+        //// todo add time for client service from configuration
 
-        GameClock.getInstance().postExecute(secondsToServeClient, () -> {
+        GameClock.getInstance().postExecute(ticksToServeClient, () -> {
             var currentClient = clientsQueue.poll();
             currentClient.buyTickets();
         });
@@ -63,11 +63,11 @@ public class CashRegister {
         return isOpen;
     }
 
-    public int getSecondsToServeClient() {
-        return secondsToServeClient;
+    public int getTicksToServeClient() {
+        return ticksToServeClient;
     }
 
-    public void setSecondsToServeClient(int secondsToServeClient) {
-        this.secondsToServeClient = secondsToServeClient;
+    public void setTicksToServeClient(int ticksToServeClient) {
+        this.ticksToServeClient = ticksToServeClient;
     }
 }
