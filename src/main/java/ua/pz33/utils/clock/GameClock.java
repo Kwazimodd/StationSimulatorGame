@@ -11,7 +11,6 @@ public class GameClock {
     private final List<WeakReference<ClockObserver>> observers = new ArrayList<>();
     private final Thread clockThread;
 
-
     private static GameClock instance;
 
     public GameClock() {
@@ -36,6 +35,10 @@ public class GameClock {
             }
 
         }
+    }
+    public void postExecute(int ticks, Runnable function){
+        var postExecuteObserver = new PostExecuteObserver(ticks, function);
+        addObserver(postExecuteObserver);
     }
 
     public static GameClock getInstance() {
@@ -69,6 +72,25 @@ public class GameClock {
             }
 
             observer.onTick();
+        }
+    }
+
+    class PostExecuteObserver implements  ClockObserver{
+        private int tickToRun;
+        private int currentTick = 0;
+        private Runnable function;
+        public PostExecuteObserver(int ticks, Runnable function){
+            this.tickToRun = ticks;
+            this.function = function;
+        }
+        @Override
+        public void onTick() {
+            currentTick++;
+
+            if(currentTick == tickToRun){
+                function.run();
+                observers.remove(this);
+            }
         }
     }
 }
