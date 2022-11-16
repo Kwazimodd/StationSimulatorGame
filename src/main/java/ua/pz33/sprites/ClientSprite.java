@@ -1,11 +1,9 @@
-package ua.pz33.sprites.clients;
+package ua.pz33.sprites;
 
 import ua.pz33.rendering.animation.AnimationController;
 import ua.pz33.rendering.animation.IntAnimation;
 import ua.pz33.rendering.animation.Storyboard;
 import ua.pz33.rendering.animation.interpolation.Interpolators;
-import ua.pz33.sprites.ImageSprite;
-import ua.pz33.sprites.Sprite;
 import ua.pz33.utils.DistanceCounter;
 
 public class ClientSprite extends ImageSprite {
