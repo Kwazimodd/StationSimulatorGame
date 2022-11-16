@@ -1,12 +1,17 @@
 package ua.pz33.sprites;
 
+import ua.pz33.rendering.animation.AnimationController;
+import ua.pz33.rendering.animation.IntAnimation;
+import ua.pz33.rendering.animation.Storyboard;
+import ua.pz33.rendering.animation.interpolation.Interpolators;
+import ua.pz33.utils.DistanceCounter;
 import ua.pz33.utils.ResourceLoader;
 
 import java.awt.*;
 
 public class ImageSprite extends Sprite {
     private final int zIndex;
-    private final Image spriteImage;
+    protected final Image spriteImage;
 
     public ImageSprite(String image) {
         this(image, 0);
