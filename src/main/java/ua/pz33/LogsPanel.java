@@ -3,6 +3,7 @@ package ua.pz33;
 import ua.pz33.utils.logs.LogDestination;
 
 import javax.swing.*;
+import javax.swing.text.DefaultCaret;
 import java.awt.*;
 
 public class LogsPanel extends JPanel implements LogDestination {
@@ -23,8 +24,10 @@ public class LogsPanel extends JPanel implements LogDestination {
         add(logsLabel);
 
         textArea = new JTextArea();
-        textArea.setFont(textArea.getFont().deriveFont(10f));
+        textArea.setFont(textArea.getFont().deriveFont(12f));
         textArea.setEditable(false);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
 
         JScrollPane logsScroller = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         logsScroller.setBorder(BorderFactory.createEmptyBorder(0, 12, 32, 12));
@@ -33,6 +36,6 @@ public class LogsPanel extends JPanel implements LogDestination {
 
     @Override
     public void logMessage(String message) {
-        textArea.append(System.currentTimeMillis() + " ms : " + message + "\r\n");
+        textArea.append(String.format("%1$TH:%1$TM:%1$TS", System.currentTimeMillis())  + ": " + message + "\r\n\n");
     }
 }
