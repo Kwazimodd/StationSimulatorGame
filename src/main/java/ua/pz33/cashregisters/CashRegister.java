@@ -2,20 +2,24 @@ package ua.pz33.cashregisters;
 
 import ua.pz33.Station;
 import ua.pz33.clients.Client;
+import ua.pz33.utils.clock.ClockObserver;
 import ua.pz33.utils.clock.GameClock;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
-public class CashRegister {
+public class CashRegister implements ClockObserver {
+    private static int CashRegisterId = 1;
     private PriorityQueue<Client> clientsQueue = new PriorityQueue<>(statusComparator);
     private int ticksToServeClient = 50;
     private boolean isBackup = false;
+    private int id;
 
     private CashRegisterState currentState;
 
     public CashRegister(){
         currentState = CashRegisterState.Waiting;
+        id = CashRegisterId++;
     }
 
     public CashRegister(PriorityQueue<Client> oldQueue){
@@ -86,5 +90,14 @@ public class CashRegister {
     public void makeBackup(){
         isBackup = true;
         close();
+    }
+
+    public int getId(){
+        return id;
+    }
+
+    @Override
+    public void onTick() {
+        service();
     }
 }

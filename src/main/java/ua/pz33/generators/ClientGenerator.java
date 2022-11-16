@@ -1,5 +1,10 @@
 package ua.pz33.generators;
 
+import ua.pz33.Station;
+import ua.pz33.clients.Client;
+import ua.pz33.clients.ClientController;
+import ua.pz33.clients.ClientStatus;
+import ua.pz33.sprites.Entrance;
 import ua.pz33.utils.clock.ClockObserver;
 import ua.pz33.utils.configuration.ConfigurationMediator;
 import ua.pz33.utils.configuration.PropertyChangedEventArgs;
@@ -7,6 +12,7 @@ import ua.pz33.utils.configuration.PropertyRegistry;
 import ua.pz33.utils.logs.LogMediator;
 
 import java.awt.*;
+import java.util.List;
 import java.util.Random;
 
 
@@ -17,6 +23,7 @@ public class ClientGenerator implements ClockObserver {
     private final int maxAmountOfClients;
     public int clientCount = 0;
     private int ticksPerClient;
+    private static int ClientId = 1;
 
     private static ClientGenerator instance;
 
@@ -43,25 +50,30 @@ public class ClientGenerator implements ClockObserver {
     public void spawnClient() {
         if (!isPaused) {
             int a = random.nextInt(10);
+            int ticketsCount = random.nextInt(9);
+            List<Entrance> entrances = Station.getInstance().getEntrances();
+            Entrance randomEntrance = entrances.get(random.nextInt(entrances.size()));
             if (a < 5) {
                 //50%
                 //spawn normal client in pos (x-100,y-100)
+                ClientController.getInstance().AddClient(new Client(ClientId++, ticketsCount, ClientStatus.REGULAR), randomEntrance);
                 LogMediator.getInstance().logMessage("Spawned a normal client");
             } else if (a < 7) {
                 //20%
-                //spawn exempt client in pos (x-100,y-100)
+                //spawn invalid client in pos (x-100,y-100)
+                ClientController.getInstance().AddClient(new Client(ClientId++, ticketsCount, ClientStatus.INVALID), randomEntrance);
                 LogMediator.getInstance().logMessage("Spawned a client with special needs");
             } else if (a < 9) {
                 //20%
                 //spawn client with children in pos (x-100,y-100)
-
+                ClientController.getInstance().AddClient(new Client(ClientId++, ticketsCount, ClientStatus.HAS_KIDS), randomEntrance);
                 LogMediator.getInstance().logMessage("Spawned a client with children");
             } else {
                 //10%
                 //spawn VIP client in pos (x-100,y-100)
+                ClientController.getInstance().AddClient(new Client(ClientId++, ticketsCount, ClientStatus.VIP), randomEntrance);
                 LogMediator.getInstance().logMessage("Spawned a VIP client");
             }
-
             clientCount++;
         }
 
