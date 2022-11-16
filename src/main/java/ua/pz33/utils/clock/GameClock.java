@@ -1,27 +1,41 @@
 package ua.pz33.utils.clock;
 
+import ua.pz33.utils.configuration.ConfigurationListener;
+import ua.pz33.utils.configuration.ConfigurationMediator;
+import ua.pz33.utils.configuration.PropertyChangedEventArgs;
+
 import java.awt.*;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameClock {
+import static ua.pz33.utils.configuration.PropertyRegistry.IS_PAUSED;
+
+public class GameClock implements ConfigurationListener {
     private static final int TICKS_PER_SECOND = 10;
 
     private final List<WeakReference<ClockObserver>> observers = new ArrayList<>();
+    private final List<ClockObserver> delayedRunners = new ArrayList<>();
     private final Thread clockThread;
 
     private static GameClock instance;
 
+    private boolean isPaused;
+
     public GameClock() {
+        config().addListener(this);
+
         clockThread = new Thread(this::clockThreadRun, "Clock-Thread");
     }
 
+    @SuppressWarnings("BusyWait")
     private void clockThreadRun() {
         long currMillis = System.currentTimeMillis() - 100;
 
         while (true) {
-            EventQueue.invokeLater(this::onTick);
+            if (!isPaused) {
+                EventQueue.invokeLater(this::onTick);
+            }
 
             var delta = System.currentTimeMillis() - currMillis;
             var toSleep = Math.max(2 * 1000 / TICKS_PER_SECOND - delta, 0);
@@ -35,9 +49,10 @@ public class GameClock {
             }
         }
     }
-    public void postExecute(int ticks, Runnable function){
+
+    public void postExecute(int ticks, Runnable function) {
         var postExecuteObserver = new PostExecuteObserver(ticks, function);
-        addObserver(postExecuteObserver);
+        this.delayedRunners.add(postExecuteObserver);
     }
 
     public static GameClock getInstance() {
@@ -49,6 +64,8 @@ public class GameClock {
     }
 
     public void startTimer() {
+        isPaused = config().getValueOrDefault(IS_PAUSED, true);
+
         clockThread.start();
     }
 
@@ -70,25 +87,49 @@ public class GameClock {
                 continue;
             }
 
-            observer.onTick();
+            try {
+                observer.onTick();
+            } catch (Exception ignored) {
+            }
+        }
+
+        for (var runner : delayedRunners) {
+            try {
+                runner.onTick();
+            } catch (Exception ignored) {
+            }
         }
     }
 
-    class PostExecuteObserver implements  ClockObserver{
-        private int tickToRun;
+    private static ConfigurationMediator config() {
+        return ConfigurationMediator.getInstance();
+    }
+
+    @Override
+    public void onPropertyChanged(PropertyChangedEventArgs args) {
+        if (args.getPropertyName().equals(IS_PAUSED)) {
+            isPaused = args.getNewValue() instanceof Boolean ? ((Boolean) args.getNewValue()) : true;
+        }
+    }
+
+    class PostExecuteObserver implements ClockObserver {
+        private final int tickToRun;
+        private final Runnable function;
+
         private int currentTick = 0;
-        private Runnable function;
-        public PostExecuteObserver(int ticks, Runnable function){
+
+        public PostExecuteObserver(int ticks, Runnable function) {
             this.tickToRun = ticks;
             this.function = function;
         }
+
         @Override
         public void onTick() {
             currentTick++;
 
-            if(currentTick == tickToRun){
+            if (currentTick == tickToRun) {
                 function.run();
-                observers.remove(this);
+                delayedRunners.remove(this);
             }
         }
     }

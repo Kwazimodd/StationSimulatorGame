@@ -51,11 +51,12 @@ public class ConfigurationMediator {
         return properties.get(property);
     }
 
-    public Object getValueOrDefault(@MagicConstant(valuesFromClass = PropertyRegistry.class) String property, Object defaultValue) {
+    public <T> T getValueOrDefault(@MagicConstant(valuesFromClass = PropertyRegistry.class) String property, T defaultValue) {
         if (!properties.containsKey(property)) {
             setValue(property, defaultValue);
         }
 
-        return getValue(property);
+        //noinspection unchecked
+        return (T)getValue(property);
     }
 }

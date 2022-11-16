@@ -1,7 +1,9 @@
 package ua.pz33;
 
 import ua.pz33.rendering.GameCanvas;
+import ua.pz33.utils.configuration.ConfigurationListener;
 import ua.pz33.utils.configuration.ConfigurationMediator;
+import ua.pz33.utils.configuration.PropertyChangedEventArgs;
 import ua.pz33.utils.configuration.PropertyRegistry;
 
 import javax.swing.*;
@@ -9,13 +11,18 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class ConfigPanel extends JPanel {
+import static ua.pz33.utils.configuration.PropertyRegistry.*;
 
-    private GameCanvas canvas;
+public class ConfigPanel extends JPanel implements ConfigurationListener {
+
+    private final GameCanvas canvas;
+    private JButton startButton;
+    private JButton pauseButton;
 
     public ConfigPanel(GameCanvas canvas) {
         super(true);
         this.canvas = canvas;
+        configs().addListener(this);
         initializeContent();
     }
 
@@ -36,7 +43,7 @@ public class ConfigPanel extends JPanel {
 
         var save = new JButton("Save");
         save.setAlignmentX(LEFT_ALIGNMENT);
-        save.addActionListener(e -> configs().setValue(PropertyRegistry.TICKS_PER_CLIENT, Integer.parseInt(ticksPerClientField.getText())));
+        save.addActionListener(e -> configs().setValue(TICKS_PER_CLIENT, Integer.parseInt(ticksPerClientField.getText())));
 
         //Another configuration fields
         //Time of service
@@ -66,42 +73,58 @@ public class ConfigPanel extends JPanel {
         addCashRegisterButton.addActionListener(e -> canvas.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-                ConfigurationMediator.getInstance().setValue(
-                        PropertyRegistry.LAST_MOUSE_CLICK_POSITION,
-                        new Point(e.getX(), e.getY()));
+                configs().setValue(LAST_MOUSE_CLICK_POSITION, new Point(e.getX(), e.getY()));
 
                 //console log
-                System.out.println("Put Cash Register at position: " + ConfigurationMediator.getInstance().getValueOrDefault(PropertyRegistry.LAST_MOUSE_CLICK_POSITION, null).toString());
+                System.out.println("Put Cash Register at position: " + configs().getValueOrDefault(LAST_MOUSE_CLICK_POSITION, null).toString());
                 canvas.removeMouseListener(this);
             }
         }));
+
         var addReserveCashRegisterButton = new JButton("Reserve CR");
         addReserveCashRegisterButton.setAlignmentX(LEFT_ALIGNMENT);
         addReserveCashRegisterButton.addActionListener(e -> canvas.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-                ConfigurationMediator.getInstance().setValue(
-                        PropertyRegistry.LAST_MOUSE_CLICK_POSITION,
-                        new Point(e.getX(), e.getY()));
+                configs().setValue(LAST_MOUSE_CLICK_POSITION, new Point(e.getX(), e.getY()));
                 //console log
-                System.out.println("Put Reserved Cash Register at position: " + ConfigurationMediator.getInstance().getValueOrDefault(PropertyRegistry.LAST_MOUSE_CLICK_POSITION, null).toString());
+                System.out.println("Put Reserved Cash Register at position: " + configs().getValueOrDefault(LAST_MOUSE_CLICK_POSITION, null).toString());
                 canvas.removeMouseListener(this);
             }
         }));
+
         var addEntranceButton = new JButton("Entrance");
         addEntranceButton.setAlignmentX(LEFT_ALIGNMENT);
         addEntranceButton.addActionListener(e -> canvas.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-                ConfigurationMediator.getInstance().setValue(
-                        PropertyRegistry.LAST_MOUSE_CLICK_POSITION,
-                        new Point(e.getX(), e.getY()));
+                configs().setValue(LAST_MOUSE_CLICK_POSITION, new Point(e.getX(), e.getY()));
                 //console log
-                System.out.println("Put Entrance at position: " + ConfigurationMediator.getInstance().getValueOrDefault(PropertyRegistry.LAST_MOUSE_CLICK_POSITION, null).toString());
+                System.out.println("Put Entrance at position: " + configs().getValueOrDefault(LAST_MOUSE_CLICK_POSITION, null).toString());
                 canvas.removeMouseListener(this);
             }
         }));
 
+        var addItemsPanel = new JPanel();
+        addItemsPanel.setAlignmentX(LEFT_ALIGNMENT);
+        addItemsPanel.setLayout(new BoxLayout(addItemsPanel, BoxLayout.X_AXIS));
+
+        addItemsPanel.add(addEntranceButton);
+        addItemsPanel.add(addCashRegisterButton);
+        addItemsPanel.add(addReserveCashRegisterButton);
+
+        startButton = new JButton("Start");
+        startButton.addActionListener(e -> configs().setValue(IS_PAUSED, false));
+
+        pauseButton = new JButton("Pause");
+        pauseButton.addActionListener(e -> configs().setValue(IS_PAUSED, true));
+
+        var startStopPanel = new JPanel();
+        startStopPanel.setAlignmentX(LEFT_ALIGNMENT);
+        startStopPanel.setLayout(new BoxLayout(startStopPanel, BoxLayout.X_AXIS));
+
+        startStopPanel.add(startButton);
+        startStopPanel.add(pauseButton);
 
         //configuration models
         add(configLabel);
@@ -115,16 +138,24 @@ public class ConfigPanel extends JPanel {
         add(expectedPeopleField);
         add(new JLabel("Percent of special group peoples"));
         add(percentSpecialField);
+        add(addItemsPanel);
         add(save);
 
         add(new JLabel("Select creating model:"));
-        add(addEntranceButton);
-        add(addCashRegisterButton);
-        add(addReserveCashRegisterButton);
-
+        add(startStopPanel);
     }
 
     private ConfigurationMediator configs() {
         return ConfigurationMediator.getInstance();
+    }
+
+    @Override
+    public void onPropertyChanged(PropertyChangedEventArgs args) {
+        if (args.getPropertyName().equals(IS_PAUSED)) {
+            var isPaused = args.getNewValue() instanceof Boolean ? ((Boolean) args.getNewValue()) : true;
+
+            startButton.setEnabled(isPaused);
+            pauseButton.setEnabled(!isPaused);
+        }
     }
 }
