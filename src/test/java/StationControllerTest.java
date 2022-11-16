@@ -1,10 +1,10 @@
 import org.junit.jupiter.api.Assertions;
-import ua.pz33.Station;
+import ua.pz33.StationController;
 import ua.pz33.cashregisters.CashRegister;
 import ua.pz33.clients.Client;
 import ua.pz33.clients.ClientStatus;
 
-public class StationTest {
+public class StationControllerTest {
     @org.junit.jupiter.api.Test
     void moveQueueTest() {
         CashRegister cashRegister1 = new CashRegister();
@@ -21,11 +21,11 @@ public class StationTest {
         CashRegister backupCashRegister1 = new CashRegister();
         CashRegister backupCashRegister2 = new CashRegister();
 
-        Station station = Station.getInstance();
-        station.addCashRegister(cashRegister1);
-        station.addCashRegister(cashRegister2);
-        station.addBackupCashRegister(backupCashRegister1);
-        station.addBackupCashRegister(backupCashRegister2);
+        StationController stationController = StationController.getInstance();
+        stationController.addCashRegister(cashRegister1);
+        stationController.addCashRegister(cashRegister2);
+        stationController.addBackupCashRegister(backupCashRegister1);
+        stationController.addBackupCashRegister(backupCashRegister2);
 
         cashRegister2.close();
         cashRegister1.close();

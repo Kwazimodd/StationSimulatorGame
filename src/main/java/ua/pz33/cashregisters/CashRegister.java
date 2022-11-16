@@ -1,6 +1,6 @@
 package ua.pz33.cashregisters;
 
-import ua.pz33.Station;
+import ua.pz33.StationController;
 import ua.pz33.clients.Client;
 import ua.pz33.utils.clock.ClockObserver;
 import ua.pz33.utils.clock.GameClock;
@@ -72,7 +72,7 @@ public class CashRegister implements ClockObserver {
 
     public void close(){
         currentState = CashRegisterState.Closed;
-        Station.getInstance().moveQueue(clientsQueue);
+        StationController.getInstance().moveQueue(clientsQueue);
     }
 
     public boolean isOpen() {
