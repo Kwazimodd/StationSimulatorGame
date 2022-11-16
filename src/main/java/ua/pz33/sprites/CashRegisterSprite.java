@@ -15,7 +15,7 @@ public class CashRegisterSprite extends ImageSprite {
 
     public CashRegisterSprite(int id, String image) {
         super(image);
-        id = id;
+        this.id = id;
     }
 
     public int getId(){

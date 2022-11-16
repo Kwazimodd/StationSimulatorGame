@@ -82,7 +82,7 @@ public class ClientGenerator implements ClockObserver {
             isPaused = true;
         }
 
-        if (isPaused && clientCount < maxAmountOfClients / 70) {
+        if (isPaused && clientCount < maxAmountOfClients * 0.7) {
             isPaused = false;
         }
     }

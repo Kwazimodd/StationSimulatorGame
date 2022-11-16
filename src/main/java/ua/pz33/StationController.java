@@ -9,7 +9,9 @@ import ua.pz33.sprites.Entrance;
 import ua.pz33.sprites.Exit;
 import ua.pz33.utils.clock.GameClock;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 public class StationController {
     private final Map<Integer, CashRegister> cashRegisters = new HashMap<>();
@@ -50,8 +52,8 @@ public class StationController {
         clients.put(client.getId(), client);
 
         ClientSprite clientSprite = new ClientSprite(client);
-        clientSprite.setX(entrance.getX());
-        clientSprite.setY(entrance.getY());
+        clientSprite.setBounds(new Rectangle(entrance.getX(), entrance.getY(), 50, 50));
+
         SpriteRegistry.getInstance().registerSprite(clientSprite);
         clientSprites.put(clientSprite.getId(), clientSprite);
     }
@@ -69,6 +71,7 @@ public class StationController {
     }
 
     public void addEntrance(Entrance entrance) {
+        SpriteRegistry.getInstance().registerSprite(entrance);
         entrances.add(entrance);
     }
 
@@ -77,6 +80,7 @@ public class StationController {
     }
 
     public void addExit(Exit newExit) {
+        SpriteRegistry.getInstance().registerSprite(newExit);
         exit = newExit;
     }
 
@@ -90,8 +94,7 @@ public class StationController {
         GameClock.getInstance().addObserver(cashRegister);
 
         CashRegisterSprite cashRegisterSprite = new CashRegisterSprite(cashRegister.getId(), "CashRegister200X200.png");
-        cashRegisterSprite.setX(x);
-        cashRegisterSprite.setY(y);
+        cashRegisterSprite.setBounds(new Rectangle(x, y, 100, 100));
         SpriteRegistry.getInstance().registerSprite(cashRegisterSprite);
         cashRegisterSprites.put(cashRegisterSprite.getId(), cashRegisterSprite);
     }
@@ -103,8 +106,7 @@ public class StationController {
         GameClock.getInstance().addObserver(cashRegister);
 
         CashRegisterSprite cashRegisterSprite = new CashRegisterSprite(cashRegister.getId(), "CashRegisterReserved200X200.png");
-        cashRegisterSprite.setX(x);
-        cashRegisterSprite.setY(y);
+        cashRegisterSprite.setBounds(new Rectangle(x, y, 100, 100));
         SpriteRegistry.getInstance().registerSprite(cashRegisterSprite);
         cashRegisterSprites.put(cashRegister.getId(), cashRegisterSprite);
     }
