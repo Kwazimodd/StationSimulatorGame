@@ -122,11 +122,11 @@ public class ConfigPanel extends JPanel {
         add(percentSpecialField);
         add(save);
         //spawning models components
-        add(new JLabel("Enter spawning cords:"));
-        add(new JLabel("x:"));
-        add(xCoordinateField);
-        add(new JLabel("y:"));
-        add(yCoordinateField);
+//        add(new JLabel("Enter spawning cords:"));
+//        add(new JLabel("x:"));
+//        add(xCoordinateField);
+//        add(new JLabel("y:"));
+//        add(yCoordinateField);
         add(new JLabel("Select creating model:"));
         add(addEntranceButton);
         add(addCashRegisterButton);
