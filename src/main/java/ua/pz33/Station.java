@@ -58,6 +58,7 @@ public class Station {
     public void addCashRegister(int x, int y){
         CashRegister cashRegister = new CashRegister();
         cashRegisters.add(cashRegister);
+        GameClock.getInstance().addObserver(cashRegister);
 
         CashRegisterSprite cashRegisterSprite = new CashRegisterSprite(cashRegister.getId(), "CashRegister200X200.png");
         cashRegisterSprite.setX(x);
@@ -70,6 +71,7 @@ public class Station {
         CashRegister cashRegister = new CashRegister();
         cashRegister.makeBackup();
         backupCashRegisters.add(cashRegister);
+        GameClock.getInstance().addObserver(cashRegister);
 
         CashRegisterSprite cashRegisterSprite = new CashRegisterSprite(cashRegister.getId(), "CashRegisterReserved200X200.png");
         cashRegisterSprite.setX(x);

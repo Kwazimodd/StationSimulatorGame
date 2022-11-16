@@ -8,7 +8,7 @@ import ua.pz33.utils.clock.GameClock;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
-public class CashRegister {
+public class CashRegister implements ClockObserver {
     private static int CashRegisterId = 1;
     private PriorityQueue<Client> clientsQueue = new PriorityQueue<>(statusComparator);
     private int ticksToServeClient = 50;
@@ -18,7 +18,7 @@ public class CashRegister {
     private CashRegisterState currentState;
 
     public CashRegister(){
-        currentState = CashRegisterState.Waiting;
+        currentState = CashRegisterState.Open;
         id = CashRegisterId++;
     }
 
@@ -44,7 +44,7 @@ public class CashRegister {
         GameClock.getInstance().postExecute(ticksToServeClient, () -> {
             var currentClient = clientsQueue.poll();
             currentClient.buyTickets();
-            currentState = CashRegisterState.Waiting;
+            currentState = CashRegisterState.Open;
 
             if (isBackup && clientsQueue.isEmpty()){
                 close();
@@ -96,4 +96,8 @@ public class CashRegister {
         return id;
     }
 
+    @Override
+    public void onTick() {
+        service();
+    }
 }
