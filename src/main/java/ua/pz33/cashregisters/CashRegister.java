@@ -1,5 +1,6 @@
 package ua.pz33.cashregisters;
 
+import ua.pz33.Station;
 import ua.pz33.clients.Client;
 import ua.pz33.utils.clock.GameClock;
 
@@ -10,6 +11,7 @@ public class CashRegister {
     private PriorityQueue<Client> clientsQueue = new PriorityQueue<>(statusComparator);
     private int ticksToServeClient = 50;
     private boolean isOpen = true;
+    private boolean isBackup = false;
 
     public CashRegister(){
 
@@ -34,6 +36,10 @@ public class CashRegister {
         GameClock.getInstance().postExecute(ticksToServeClient, () -> {
             var currentClient = clientsQueue.poll();
             currentClient.buyTickets();
+
+            if (isBackup && clientsQueue.isEmpty()){
+                close();
+            }
         });
 
     }
@@ -57,6 +63,7 @@ public class CashRegister {
 
     public void close(){
         isOpen = false;
+        Station.getInstance().moveQueue(clientsQueue);
     }
 
     public boolean isOpen() {
@@ -69,5 +76,10 @@ public class CashRegister {
 
     public void setTicksToServeClient(int ticksToServeClient) {
         this.ticksToServeClient = ticksToServeClient;
+    }
+
+    public void makeBackup(){
+        isBackup = true;
+        close();
     }
 }
