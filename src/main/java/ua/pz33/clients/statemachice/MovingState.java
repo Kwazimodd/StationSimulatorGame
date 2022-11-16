@@ -1,8 +1,7 @@
 package ua.pz33.clients.statemachice;
 
-import ua.pz33.Station;
+import ua.pz33.StationController;
 import ua.pz33.clients.Client;
-import ua.pz33.clients.ClientController;
 
 import java.awt.*;
 
@@ -13,7 +12,7 @@ public class MovingState extends State {
 
     @Override
     public void perform() {
-        var clientSprite = Station.getInstance().getClientSprite(client.getId()).get();
+        var clientSprite = StationController.getInstance().getClientSprite(client.getId()).get();
         var goalPoint = client.getGoalPoint();
 
         if(!client.getCashRegister().isOpen()){
@@ -27,7 +26,7 @@ public class MovingState extends State {
         }
 
         if(client.wasServiced()){
-            var exit = Station.getInstance().getExit();
+            var exit = StationController.getInstance().getExit();
             var exitPoint = new Point(exit.getX(), exit.getY());
             client.setGoalPoint(exitPoint);
         }

@@ -1,6 +1,6 @@
 package ua.pz33.clients;
 
-import ua.pz33.Station;
+import ua.pz33.StationController;
 import ua.pz33.cashregisters.CashRegister;
 import ua.pz33.sprites.CashRegisterSprite;
 import ua.pz33.utils.DistanceCounter;
@@ -10,6 +10,7 @@ import ua.pz33.clients.statemachice.State;
 import ua.pz33.utils.logs.LogMediator;
 
 import java.awt.*;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class Client implements ClockObserver {
         LogMediator.getInstance().logMessage(message);
     }
 
-    public boolean tryChooseCashRegister(List<CashRegister> cashRegisters) {
+    public boolean tryChooseCashRegister(Collection<CashRegister> cashRegisters) {
         //check if all cash registers have same number of people in queue
         var sortedCashRegisters = cashRegisters.stream().filter(c -> c.isOpen()).sorted(countInQueueComparator).toList();
 
@@ -44,13 +45,13 @@ public class Client implements ClockObserver {
 
         if(allHaveSameCount){
             //todo choose the closest
-            var cashRegistersSpriteList =  Station.getInstance().getCashRegisterSprites();
+            var cashRegistersSpriteList =  StationController.getInstance().getCashRegisterSprites();
             var closestCashRegisterSprite = cashRegistersSpriteList.stream().min(closestCashRegisterComparator).get();
-            bestCashRegister = Station.getInstance().getCashRegister(closestCashRegisterSprite.getId());
+            bestCashRegister = StationController.getInstance().getCashRegister(closestCashRegisterSprite.getId());
         }
 
         if (bestCashRegister.tryAddToQueue(this)) {
-            var cashRegisterSprite = Station.getInstance().getCashRegisterSprite(bestCashRegister.getId());
+            var cashRegisterSprite = StationController.getInstance().getCashRegisterSprite(bestCashRegister.getId());
             goalPoint = new Point(cashRegisterSprite.getX(), cashRegisterSprite.getY());
             cashRegister = bestCashRegister;
             return true;
@@ -70,7 +71,7 @@ public class Client implements ClockObserver {
 
     private Comparator<CashRegister> countInQueueComparator = Comparator.comparingInt(c -> c.getClientsQueue().size());
     private Comparator<CashRegisterSprite> closestCashRegisterComparator = (c1, c2) ->  {
-        var clientSprite = Station.getInstance().getClientSprite(id).get();
+        var clientSprite = StationController.getInstance().getClientSprite(id).get();
         int x = clientSprite.getX(), y = clientSprite.getY();
         return Integer.compare(DistanceCounter.getDistance(x, y, c1.getX(), c1.getY()), DistanceCounter.getDistance(x, y, c2.getX(), c2.getY()));
     };
