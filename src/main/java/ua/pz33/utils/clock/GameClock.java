@@ -1,6 +1,7 @@
 package ua.pz33.utils.clock;
 
 import ua.pz33.utils.configuration.ConfigurationListener;
+import ua.pz33.utils.configuration.ConfigurationMediator;
 import ua.pz33.utils.configuration.PropertyChangedEventArgs;
 
 import java.awt.*;
@@ -22,6 +23,8 @@ public class GameClock implements ConfigurationListener {
     private boolean isPaused;
 
     public GameClock() {
+        config().addListener(this);
+
         clockThread = new Thread(this::clockThreadRun, "Clock-Thread");
     }
 
@@ -61,6 +64,8 @@ public class GameClock implements ConfigurationListener {
     }
 
     public void startTimer() {
+        isPaused = config().getValueOrDefault(IS_PAUSED, true);
+
         clockThread.start();
     }
 
@@ -94,6 +99,10 @@ public class GameClock implements ConfigurationListener {
             } catch (Exception ignored) {
             }
         }
+    }
+
+    private static ConfigurationMediator config() {
+        return ConfigurationMediator.getInstance();
     }
 
     @Override

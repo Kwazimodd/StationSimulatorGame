@@ -29,9 +29,9 @@ public class ClientGenerator implements ClockObserver {
     }
 
     private ClientGenerator() {
-        position = (Point) config().getValueOrDefault(PropertyRegistry.ENTRANCE_POSITION, new Point(0, 0));
-        maxAmountOfClients = (int) config().getValueOrDefault(PropertyRegistry.MAX_AMOUNT_OF_CLIENTS, 20);
-        ticksPerClient = (int) config().getValueOrDefault(PropertyRegistry.TICKS_PER_CLIENT, 20);
+        position = config().getValueOrDefault(PropertyRegistry.ENTRANCE_POSITION, new Point(0, 0));
+        maxAmountOfClients = config().getValueOrDefault(PropertyRegistry.MAX_AMOUNT_OF_CLIENTS, 20);
+        ticksPerClient = config().getValueOrDefault(PropertyRegistry.TICKS_PER_CLIENT, 20);
 
         config().addListener(this::configUpdated);
     }
