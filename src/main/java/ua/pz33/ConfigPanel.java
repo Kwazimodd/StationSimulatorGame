@@ -74,10 +74,12 @@ public class ConfigPanel extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e)
             {
-                ConfigurationMediator.getInstance().setValue("lastMouseClickPosition", MouseInfo.getPointerInfo().getLocation());
+                ConfigurationMediator.getInstance().setValue(
+                        PropertyRegistry.LAST_MOUSE_CLICK_POSITION,
+                        new Point(e.getX(),e.getY()));
 
                 //console log
-                System.out.println("Put Cash Register at position: " + ConfigurationMediator.getInstance().getValueOrDefault("lastMouseClickPosition",null).toString());
+                System.out.println("Put Cash Register at position: " + ConfigurationMediator.getInstance().getValueOrDefault(PropertyRegistry.LAST_MOUSE_CLICK_POSITION,null).toString());
                 canvas.removeMouseListener(this);
             }
         }));
@@ -87,10 +89,11 @@ public class ConfigPanel extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e)
             {
-                ConfigurationMediator.getInstance().setValue("lastMouseClickPosition", MouseInfo.getPointerInfo().getLocation());
-
+                ConfigurationMediator.getInstance().setValue(
+                        PropertyRegistry.LAST_MOUSE_CLICK_POSITION,
+                        new Point(e.getX(),e.getY()));
                 //console log
-                System.out.println("Put Reserved Cash Register at position: " + ConfigurationMediator.getInstance().getValueOrDefault("lastMouseClickPosition",null).toString());
+                System.out.println("Put Reserved Cash Register at position: " + ConfigurationMediator.getInstance().getValueOrDefault(PropertyRegistry.LAST_MOUSE_CLICK_POSITION,null).toString());
                 canvas.removeMouseListener(this);
             }
         }));
@@ -100,10 +103,11 @@ public class ConfigPanel extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e)
             {
-                ConfigurationMediator.getInstance().setValue("lastMouseClickPosition", MouseInfo.getPointerInfo().getLocation());
-
+                ConfigurationMediator.getInstance().setValue(
+                        PropertyRegistry.LAST_MOUSE_CLICK_POSITION,
+                        new Point(e.getX(),e.getY()));
                 //console log
-                System.out.println("Put Entrance at position: " + ConfigurationMediator.getInstance().getValueOrDefault("lastMouseClickPosition",null).toString());
+                System.out.println("Put Entrance at position: " + ConfigurationMediator.getInstance().getValueOrDefault(PropertyRegistry.LAST_MOUSE_CLICK_POSITION,null).toString());
                 canvas.removeMouseListener(this);
             }
         }));
