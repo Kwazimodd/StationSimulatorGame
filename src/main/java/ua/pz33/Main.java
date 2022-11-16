@@ -59,7 +59,7 @@ public class Main {
         greenCircle.setBounds(new Rectangle(55, 45, 90, 90));
 
         ImageSprite dumbDude = new ImageSprite("BodyVIP200X200.png", 15);
-        dumbDude.setBounds(new Rectangle(55, 45, 90, 90));
+        dumbDude.setBounds(new Rectangle(55, 45, 50, 50));
 
         var anim = new Storyboard.Builder()
                 .withDuration(800)
