@@ -6,7 +6,7 @@ import ua.pz33.utils.AmazingStopwatch;
 import java.awt.*;
 
 public class RenderTimer {
-    private static final boolean PRINT_FRAME_TIMES = true;
+    private static final boolean PRINT_FRAME_TIMES = false;
 
     private static final int TARGET_FPS = 60;
 
