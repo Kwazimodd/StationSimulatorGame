@@ -28,7 +28,7 @@ class ClientTest {
         cashRegisters.get(2).tryAddToQueue(new Client(7, 3000, ClientStatus.REGULAR));
 
         Client client = new Client(9, 4000, ClientStatus.HAS_KIDS);
-        client.chooseCashRegister(cashRegisters);
+        client.tryChooseCashRegister(cashRegisters);
 
         Assertions.assertTrue(cashRegisters.get(2).getClientsQueue().contains(client));
     }

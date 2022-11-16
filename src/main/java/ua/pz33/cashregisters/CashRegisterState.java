@@ -4,5 +4,4 @@ public enum CashRegisterState {
     Open,
     Closed,
     Servicing,
-    Waiting
 }

@@ -70,7 +70,7 @@ public class Client implements ClockObserver {
 
     private Comparator<CashRegister> countInQueueComparator = Comparator.comparingInt(c -> c.getClientsQueue().size());
     private Comparator<CashRegisterSprite> closestCashRegisterComparator = (c1, c2) ->  {
-        var clientSprite = ClientController.getInstance().getClientSprite(id).get();
+        var clientSprite = Station.getInstance().getClientSprite(id).get();
         int x = clientSprite.getX(), y = clientSprite.getY();
         return Integer.compare(DistanceCounter.getDistance(x, y, c1.getX(), c1.getY()), DistanceCounter.getDistance(x, y, c2.getX(), c2.getY()));
     };

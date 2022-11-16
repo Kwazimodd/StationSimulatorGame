@@ -4,6 +4,7 @@ import ua.pz33.cashregisters.CashRegister;
 import ua.pz33.clients.Client;
 import ua.pz33.rendering.SpriteRegistry;
 import ua.pz33.sprites.CashRegisterSprite;
+import ua.pz33.sprites.ClientSprite;
 import ua.pz33.sprites.Entrance;
 import ua.pz33.sprites.Exit;
 import ua.pz33.utils.clock.GameClock;
@@ -17,6 +18,8 @@ public class Station {
     private List<CashRegisterSprite> backupCashRegisterSprites = new ArrayList<>();
     private List<Entrance> entrances = new ArrayList<>();
     private Exit exit;
+    private List<Client> clients;
+    private List<ClientSprite> clientSprites;
     private static Station instance;
 
     public static Station getInstance() {
@@ -26,14 +29,15 @@ public class Station {
 
         return instance;
     }
-    public void moveQueue(PriorityQueue<Client> clientsQueue){
+
+    public void moveQueue(PriorityQueue<Client> clientsQueue) {
         // Find backup cash register with minimum queue size.
         Optional<CashRegister> bestBackupCashRegister = backupCashRegisters.stream().min(
                 Comparator.comparingInt(cashRegister -> cashRegister.getClientsQueue().size()));
 
-        if (bestBackupCashRegister.isEmpty()){
+        if (bestBackupCashRegister.isEmpty()) {
             clientsQueue.forEach(client -> client.tryChooseCashRegister(cashRegisters));
-        }else{
+        } else {
             bestBackupCashRegister.get().open();
             clientsQueue.forEach(bestBackupCashRegister.get()::tryAddToQueue);
         }
@@ -41,23 +45,49 @@ public class Station {
         clientsQueue.clear();
     }
 
-    public void addEntrance(Entrance entrance){
+    public void addClient(Client client, Entrance entrance) {
+        GameClock.getInstance().addObserver(client);
+        clients.add(client);
+
+        ClientSprite clientSprite = new ClientSprite(client);
+        clientSprite.setX(entrance.getX());
+        clientSprite.setY(entrance.getY());
+        SpriteRegistry.getInstance().registerSprite(clientSprite);
+        clientSprites.add(clientSprite);
+    }
+
+    public List<Client> getClients() {
+        return clients;
+    }
+
+    public List<ClientSprite> getClientSprites() {
+        return clientSprites;
+    }
+
+    public Optional<ClientSprite> getClientSprite(int id) {
+        return clientSprites.stream().filter(clientSprite -> clientSprite.getId() == id).findFirst();
+    }
+
+    public void addEntrance(Entrance entrance) {
         entrances.add(entrance);
     }
-    public List<Entrance> getEntrances(){
+
+    public List<Entrance> getEntrances() {
         return entrances;
     }
 
-    public void addExit(Exit newExit){
+    public void addExit(Exit newExit) {
         exit = newExit;
     }
-    public Exit getExit(){
+
+    public Exit getExit() {
         return exit;
     }
 
-    public void addCashRegister(int x, int y){
+    public void addCashRegister(int x, int y) {
         CashRegister cashRegister = new CashRegister();
         cashRegisters.add(cashRegister);
+        GameClock.getInstance().addObserver(cashRegister);
 
         CashRegisterSprite cashRegisterSprite = new CashRegisterSprite(cashRegister.getId(), "CashRegister200X200.png");
         cashRegisterSprite.setX(x);
@@ -66,10 +96,11 @@ public class Station {
         cashRegisterSprites.add(cashRegisterSprite);
     }
 
-    public void addBackupCashRegister(int x, int y){
+    public void addBackupCashRegister(int x, int y) {
         CashRegister cashRegister = new CashRegister();
         cashRegister.makeBackup();
         backupCashRegisters.add(cashRegister);
+        GameClock.getInstance().addObserver(cashRegister);
 
         CashRegisterSprite cashRegisterSprite = new CashRegisterSprite(cashRegister.getId(), "CashRegisterReserved200X200.png");
         cashRegisterSprite.setX(x);
@@ -78,34 +109,36 @@ public class Station {
         cashRegisterSprites.add(cashRegisterSprite);
     }
 
-    public void addCashRegister(CashRegister cashRegister){
+    public void addCashRegister(CashRegister cashRegister) {
         cashRegisters.add(cashRegister);
     }
 
-    public void addBackupCashRegister(CashRegister cashRegister){
+    public void addBackupCashRegister(CashRegister cashRegister) {
         cashRegister.makeBackup();
         backupCashRegisters.add(cashRegister);
     }
 
-    public List<CashRegister> getCashRegisters(){
+    public List<CashRegister> getCashRegisters() {
         return cashRegisters;
     }
 
-    public List<CashRegisterSprite> getCashRegisterSprites(){
+    public List<CashRegisterSprite> getCashRegisterSprites() {
         return cashRegisterSprites;
     }
 
-    public List<CashRegister> getBackupCashRegisters(){
+    public List<CashRegister> getBackupCashRegisters() {
         return backupCashRegisters;
     }
-    public CashRegister getCashRegister(int id){
+
+    public CashRegister getCashRegister(int id) {
         return backupCashRegisters.stream().filter(c -> c.getId() == id).findFirst().get();
     }
-    public CashRegisterSprite getCashRegisterSprite(int id){
+
+    public CashRegisterSprite getCashRegisterSprite(int id) {
         return cashRegisterSprites.stream().filter(c -> c.getId() == id).findFirst().get();
     }
 
-    public CashRegisterSprite getBackupCashRegisterSprite(int id){
+    public CashRegisterSprite getBackupCashRegisterSprite(int id) {
         return backupCashRegisterSprites.stream().filter(c -> c.getId() == id).findFirst().get();
     }
 }
