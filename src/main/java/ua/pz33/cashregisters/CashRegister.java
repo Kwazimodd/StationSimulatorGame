@@ -36,7 +36,7 @@ public class CashRegister implements ClockObserver {
     }
 
     public void service(){
-        //// todo add time for client service from configuration
+        // todo add time for client service from configuration
         if(currentState.equals(CashRegisterState.Servicing))
             return;
 

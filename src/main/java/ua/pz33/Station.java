@@ -100,12 +100,14 @@ public class Station {
     public List<CashRegister> getBackupCashRegisters(){
         return backupCashRegisters;
     }
-
+    public CashRegister getCashRegister(int id){
+        return backupCashRegisters.stream().filter(c -> c.getId() == id).findFirst().get();
+    }
     public CashRegisterSprite getCashRegisterSprite(int id){
-        return cashRegisterSprites.get(id);
+        return cashRegisterSprites.stream().filter(c -> c.getId() == id).findFirst().get();
     }
 
     public CashRegisterSprite getBackupCashRegisterSprite(int id){
-        return backupCashRegisterSprites.get(id);
+        return backupCashRegisterSprites.stream().filter(c -> c.getId() == id).findFirst().get();
     }
 }

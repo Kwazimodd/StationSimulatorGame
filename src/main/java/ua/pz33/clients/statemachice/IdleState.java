@@ -13,7 +13,6 @@ public class IdleState extends State {
 
     @Override
     public void perform() {
-        //todo get list of cashregisters
         List<CashRegister> cashRegisters = Station.getInstance().getCashRegisters();
         if(client.tryChooseCashRegister(cashRegisters)){
             client.changeState(new MovingState(client));
