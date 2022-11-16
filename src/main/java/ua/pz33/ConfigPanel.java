@@ -5,13 +5,25 @@ import ua.pz33.utils.configuration.PropertyRegistry;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class ConfigPanel extends JPanel {
+
+    private GameCanvas canvas;
     public ConfigPanel() {
         super(true);
 
         initializeContent();
     }
+
+    public ConfigPanel(GameCanvas canvas)
+    {
+        super(true);
+        this.canvas = canvas;
+        initializeContent();
+    }
+
 
     private void initializeContent() {
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
@@ -58,13 +70,43 @@ public class ConfigPanel extends JPanel {
 
         var addCashRegisterButton = new JButton("Cash Register");
         addCashRegisterButton.setAlignmentX(LEFT_ALIGNMENT);
-        //addCashRegisterButton.addActionListener(e->);
+        addCashRegisterButton.addActionListener(e->canvas.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e)
+            {
+                ConfigurationMediator.getInstance().setValue("lastMouseClickPosition", MouseInfo.getPointerInfo().getLocation());
+
+                //console log
+                System.out.println("Put Cash Register at position: " + ConfigurationMediator.getInstance().getValueOrDefault("lastMouseClickPosition",null).toString());
+                canvas.removeMouseListener(this);
+            }
+        }));
         var addReserveCashRegisterButton = new JButton("Reserve CR");
         addReserveCashRegisterButton.setAlignmentX(LEFT_ALIGNMENT);
-        //addReserveCashRegisterButton.addActionListener();
+        addReserveCashRegisterButton.addActionListener(e->canvas.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e)
+            {
+                ConfigurationMediator.getInstance().setValue("lastMouseClickPosition", MouseInfo.getPointerInfo().getLocation());
+
+                //console log
+                System.out.println("Put Reserved Cash Register at position: " + ConfigurationMediator.getInstance().getValueOrDefault("lastMouseClickPosition",null).toString());
+                canvas.removeMouseListener(this);
+            }
+        }));
         var addEntranceButton = new JButton("Entrance");
         addEntranceButton.setAlignmentX(LEFT_ALIGNMENT);
-        //addEntranceButton.addActionListener();
+        addEntranceButton.addActionListener(e->canvas.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e)
+            {
+                ConfigurationMediator.getInstance().setValue("lastMouseClickPosition", MouseInfo.getPointerInfo().getLocation());
+
+                //console log
+                System.out.println("Put Entrance at position: " + ConfigurationMediator.getInstance().getValueOrDefault("lastMouseClickPosition",null).toString());
+                canvas.removeMouseListener(this);
+            }
+        }));
 
 
         //configuration models
