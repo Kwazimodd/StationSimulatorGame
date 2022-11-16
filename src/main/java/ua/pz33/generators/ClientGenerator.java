@@ -2,7 +2,6 @@ package ua.pz33.generators;
 
 import ua.pz33.Station;
 import ua.pz33.clients.Client;
-import ua.pz33.clients.ClientController;
 import ua.pz33.clients.ClientStatus;
 import ua.pz33.sprites.Entrance;
 import ua.pz33.utils.clock.ClockObserver;
@@ -24,6 +23,8 @@ public class ClientGenerator implements ClockObserver {
     public int clientCount = 0;
     private int ticksPerClient;
     private static int ClientId = 1;
+
+    private Station station = Station.getInstance();
 
     private static ClientGenerator instance;
 
@@ -56,22 +57,22 @@ public class ClientGenerator implements ClockObserver {
             if (a < 5) {
                 //50%
                 //spawn normal client in pos (x-100,y-100)
-                ClientController.getInstance().AddClient(new Client(ClientId++, ticketsCount, ClientStatus.REGULAR), randomEntrance);
+                station.addClient(new Client(ClientId++, ticketsCount, ClientStatus.REGULAR), randomEntrance);
                 LogMediator.getInstance().logMessage("Spawned a normal client");
             } else if (a < 7) {
                 //20%
                 //spawn invalid client in pos (x-100,y-100)
-                ClientController.getInstance().AddClient(new Client(ClientId++, ticketsCount, ClientStatus.INVALID), randomEntrance);
+                station.addClient(new Client(ClientId++, ticketsCount, ClientStatus.INVALID), randomEntrance);
                 LogMediator.getInstance().logMessage("Spawned a client with special needs");
             } else if (a < 9) {
                 //20%
                 //spawn client with children in pos (x-100,y-100)
-                ClientController.getInstance().AddClient(new Client(ClientId++, ticketsCount, ClientStatus.HAS_KIDS), randomEntrance);
+                station.addClient(new Client(ClientId++, ticketsCount, ClientStatus.HAS_KIDS), randomEntrance);
                 LogMediator.getInstance().logMessage("Spawned a client with children");
             } else {
                 //10%
                 //spawn VIP client in pos (x-100,y-100)
-                ClientController.getInstance().AddClient(new Client(ClientId++, ticketsCount, ClientStatus.VIP), randomEntrance);
+                station.addClient(new Client(ClientId++, ticketsCount, ClientStatus.VIP), randomEntrance);
                 LogMediator.getInstance().logMessage("Spawned a VIP client");
             }
             clientCount++;
