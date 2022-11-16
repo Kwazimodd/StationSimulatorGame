@@ -60,8 +60,6 @@ public class Client implements ClockObserver {
         }
     }
 
-
-
     public void changeState(State state) {
         currentState = state;
     }
@@ -95,7 +93,7 @@ public class Client implements ClockObserver {
 
     @Override
     public void onTick() {
-
+        currentState.perform();
     }
 
     public void setGoalPoint(Point goalPoint) {

@@ -8,7 +8,7 @@ import ua.pz33.utils.clock.GameClock;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
-public class CashRegister implements ClockObserver {
+public class CashRegister {
     private static int CashRegisterId = 1;
     private PriorityQueue<Client> clientsQueue = new PriorityQueue<>(statusComparator);
     private int ticksToServeClient = 50;
@@ -96,8 +96,4 @@ public class CashRegister implements ClockObserver {
         return id;
     }
 
-    @Override
-    public void onTick() {
-        service();
-    }
 }

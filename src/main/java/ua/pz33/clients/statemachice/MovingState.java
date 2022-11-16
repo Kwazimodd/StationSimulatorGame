@@ -20,10 +20,10 @@ public class MovingState extends State {
             client.changeState(new IdleState(client));
         }
 
-        //if position of client sprite is position of service, cashregister.service() can be executed
+        //todo to test if position of client sprite is position of service, cashregister.service() can be executed
         if(clientSprite.getX() == goalPoint.x && clientSprite.getY() == goalPoint.y){
-            //client.getCashRegister().service();
-            //client.changeState(new ServicedState(client));
+            client.getCashRegister().service();
+            client.changeState(new ServicedState(client));
         }
 
         if(client.wasServiced()){
