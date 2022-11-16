@@ -1,5 +1,6 @@
 package ua.pz33.clients.statemachice;
 
+import ua.pz33.Station;
 import ua.pz33.cashregisters.CashRegister;
 import ua.pz33.clients.Client;
 
@@ -13,9 +14,9 @@ public class IdleState extends State {
     @Override
     public void perform() {
         //todo get list of cashregisters
-//        List<CashRegister> cashRegisters = ClientController.getInstance().getCashRegisters();
-//        client.chooseCashRegister(cashRegisters);
-
-        client.changeState(new MovingState(client));
+        List<CashRegister> cashRegisters = Station.getInstance().getCashRegisters();
+        if(client.tryChooseCashRegister(cashRegisters)){
+            client.changeState(new MovingState(client));
+        }
     }
 }

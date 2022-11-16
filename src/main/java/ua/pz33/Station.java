@@ -32,7 +32,7 @@ public class Station {
                 Comparator.comparingInt(cashRegister -> cashRegister.getClientsQueue().size()));
 
         if (bestBackupCashRegister.isEmpty()){
-            clientsQueue.forEach(client -> client.chooseCashRegister(cashRegisters));
+            clientsQueue.forEach(client -> client.tryChooseCashRegister(cashRegisters));
         }else{
             bestBackupCashRegister.get().open();
             clientsQueue.forEach(bestBackupCashRegister.get()::tryAddToQueue);
@@ -91,6 +91,10 @@ public class Station {
 
     public List<CashRegister> getCashRegisters(){
         return cashRegisters;
+    }
+
+    public List<CashRegisterSprite> getCashRegisterSprites(){
+        return cashRegisterSprites;
     }
 
     public List<CashRegister> getBackupCashRegisters(){
