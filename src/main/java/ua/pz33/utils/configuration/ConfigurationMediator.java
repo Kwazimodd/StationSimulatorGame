@@ -4,6 +4,8 @@ import org.intellij.lang.annotations.MagicConstant;
 
 import java.lang.ref.WeakReference;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ConfigurationMediator {
     private static ConfigurationMediator instance;
@@ -16,8 +18,8 @@ public class ConfigurationMediator {
         return instance;
     }
 
-    private final List<WeakReference<ConfigurationListener>> listeners = new ArrayList<>();
-    private final Map<String, Object> properties = new HashMap<>();
+    private final List<WeakReference<ConfigurationListener>> listeners = new CopyOnWriteArrayList<>();
+    private final Map<String, Object> properties = new ConcurrentHashMap<>();
 
     public void addListener(ConfigurationListener listener) {
         listeners.add(new WeakReference<>(listener));
