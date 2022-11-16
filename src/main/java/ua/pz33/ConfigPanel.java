@@ -30,7 +30,6 @@ public class ConfigPanel extends JPanel {
         JLabel dasLabel = new JLabel("Tick per client spawn");
         dasLabel.setAlignmentX(LEFT_ALIGNMENT);
 
-
         JTextField ticksPerClientField = new JTextField("20");
         ticksPerClientField.setAlignmentX(LEFT_ALIGNMENT);
         ticksPerClientField.setMaximumSize(new Dimension(Integer.MAX_VALUE, ticksPerClientField.getPreferredSize().height));
@@ -66,7 +65,7 @@ public class ConfigPanel extends JPanel {
         addCashRegisterButton.setAlignmentX(LEFT_ALIGNMENT);
         addCashRegisterButton.addActionListener(e -> canvas.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mouseReleased(MouseEvent e) {
                 ConfigurationMediator.getInstance().setValue(
                         PropertyRegistry.LAST_MOUSE_CLICK_POSITION,
                         new Point(e.getX(), e.getY()));
@@ -80,7 +79,7 @@ public class ConfigPanel extends JPanel {
         addReserveCashRegisterButton.setAlignmentX(LEFT_ALIGNMENT);
         addReserveCashRegisterButton.addActionListener(e -> canvas.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mouseReleased(MouseEvent e) {
                 ConfigurationMediator.getInstance().setValue(
                         PropertyRegistry.LAST_MOUSE_CLICK_POSITION,
                         new Point(e.getX(), e.getY()));
@@ -93,7 +92,7 @@ public class ConfigPanel extends JPanel {
         addEntranceButton.setAlignmentX(LEFT_ALIGNMENT);
         addEntranceButton.addActionListener(e -> canvas.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mouseReleased(MouseEvent e) {
                 ConfigurationMediator.getInstance().setValue(
                         PropertyRegistry.LAST_MOUSE_CLICK_POSITION,
                         new Point(e.getX(), e.getY()));
@@ -109,6 +108,7 @@ public class ConfigPanel extends JPanel {
         add(dasLabel);
         add(ticksPerClientField);
         //another configuration components
+
         add(new JLabel("Time of service for single CR"));
         add(serviceTimeField);
         add(new JLabel("Expected amount of people for single CR"));
@@ -116,12 +116,7 @@ public class ConfigPanel extends JPanel {
         add(new JLabel("Percent of special group peoples"));
         add(percentSpecialField);
         add(save);
-        //spawning models components
-//        add(new JLabel("Enter spawning cords:"));
-//        add(new JLabel("x:"));
-//        add(xCoordinateField);
-//        add(new JLabel("y:"));
-//        add(yCoordinateField);
+
         add(new JLabel("Select creating model:"));
         add(addEntranceButton);
         add(addCashRegisterButton);
