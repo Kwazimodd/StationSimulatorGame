@@ -2,19 +2,24 @@ package ua.pz33.cashregisters;
 
 import ua.pz33.Station;
 import ua.pz33.clients.Client;
+import ua.pz33.utils.clock.ClockObserver;
 import ua.pz33.utils.clock.GameClock;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
 public class CashRegister {
+    private static int CashRegisterId = 1;
     private PriorityQueue<Client> clientsQueue = new PriorityQueue<>(statusComparator);
     private int ticksToServeClient = 50;
-    private boolean isOpen = true;
     private boolean isBackup = false;
+    private int id;
+
+    private CashRegisterState currentState;
 
     public CashRegister(){
-
+        currentState = CashRegisterState.Waiting;
+        id = CashRegisterId++;
     }
 
     public CashRegister(PriorityQueue<Client> oldQueue){
@@ -22,7 +27,7 @@ public class CashRegister {
     }
 
     public boolean tryAddToQueue(Client client){
-        if (!isOpen){
+        if (currentState.equals(CashRegisterState.Closed)){
             return false;
         }
 
@@ -31,11 +36,15 @@ public class CashRegister {
     }
 
     public void service(){
-        //// todo add time for client service from configuration
+        // todo add time for client service from configuration
+        if(currentState.equals(CashRegisterState.Servicing))
+            return;
 
+        currentState = CashRegisterState.Servicing;
         GameClock.getInstance().postExecute(ticksToServeClient, () -> {
             var currentClient = clientsQueue.poll();
             currentClient.buyTickets();
+            currentState = CashRegisterState.Waiting;
 
             if (isBackup && clientsQueue.isEmpty()){
                 close();
@@ -58,16 +67,16 @@ public class CashRegister {
     };
 
     public void open(){
-        isOpen = true;
+        currentState = CashRegisterState.Open;
     }
 
     public void close(){
-        isOpen = false;
+        currentState = CashRegisterState.Closed;
         Station.getInstance().moveQueue(clientsQueue);
     }
 
     public boolean isOpen() {
-        return isOpen;
+        return !currentState.equals(CashRegisterState.Closed);
     }
 
     public int getTicksToServeClient() {
@@ -82,4 +91,9 @@ public class CashRegister {
         isBackup = true;
         close();
     }
+
+    public int getId(){
+        return id;
+    }
+
 }
