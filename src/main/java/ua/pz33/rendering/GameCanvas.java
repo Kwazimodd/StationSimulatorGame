@@ -1,6 +1,4 @@
-package ua.pz33;
-
-import ua.pz33.registries.SpriteRegistry;
+package ua.pz33.rendering;
 
 import javax.swing.*;
 import java.awt.*;

@@ -33,7 +33,6 @@ public class GameClock {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-
         }
     }
     public void postExecute(int ticks, Runnable function){

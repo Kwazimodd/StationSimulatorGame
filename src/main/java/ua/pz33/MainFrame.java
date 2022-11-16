@@ -1,6 +1,7 @@
 package ua.pz33;
 
 import org.jetbrains.annotations.NotNull;
+import ua.pz33.rendering.GameCanvas;
 import ua.pz33.utils.logs.LogDestination;
 
 import javax.swing.*;
