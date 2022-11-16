@@ -1,12 +1,13 @@
 package ua.pz33.clients;
 
 import ua.pz33.cashregisters.CashRegister;
+import ua.pz33.utils.clock.ClockObserver;
 import ua.pz33.utils.logs.LogMediator;
 
 import java.util.Comparator;
 import java.util.List;
 
-public class Client {
+public class Client implements ClockObserver {
     private Integer id;
     private Integer countOfTickets;
     private ClientStatus status;
@@ -49,6 +50,11 @@ public class Client {
 
     public ClientStatus getStatus() {
         return status;
+    }
+
+    @Override
+    public void onTick() {
+
     }
 }
 
