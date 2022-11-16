@@ -10,11 +10,12 @@ import java.util.PriorityQueue;
 public class CashRegister {
     private PriorityQueue<Client> clientsQueue = new PriorityQueue<>(statusComparator);
     private int ticksToServeClient = 50;
-    private boolean isOpen = true;
     private boolean isBackup = false;
 
-    public CashRegister(){
+    private CashRegisterState currentState;
 
+    public CashRegister(){
+        currentState = CashRegisterState.Waiting;
     }
 
     public CashRegister(PriorityQueue<Client> oldQueue){
@@ -22,7 +23,7 @@ public class CashRegister {
     }
 
     public boolean tryAddToQueue(Client client){
-        if (!isOpen){
+        if (currentState.equals(CashRegisterState.Closed)){
             return false;
         }
 
@@ -32,10 +33,14 @@ public class CashRegister {
 
     public void service(){
         //// todo add time for client service from configuration
+        if(currentState.equals(CashRegisterState.Servicing))
+            return;
 
+        currentState = CashRegisterState.Servicing;
         GameClock.getInstance().postExecute(ticksToServeClient, () -> {
             var currentClient = clientsQueue.poll();
             currentClient.buyTickets();
+            currentState = CashRegisterState.Waiting;
 
             if (isBackup && clientsQueue.isEmpty()){
                 close();
@@ -58,16 +63,16 @@ public class CashRegister {
     };
 
     public void open(){
-        isOpen = true;
+        currentState = CashRegisterState.Open;
     }
 
     public void close(){
-        isOpen = false;
+        currentState = CashRegisterState.Closed;
         Station.getInstance().moveQueue(clientsQueue);
     }
 
     public boolean isOpen() {
-        return isOpen;
+        return !currentState.equals(CashRegisterState.Closed);
     }
 
     public int getTicksToServeClient() {

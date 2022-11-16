@@ -49,6 +49,10 @@ public class Station {
         backupCashRegisters.add(cashRegister);
     }
 
+    public List<CashRegister> getCashRegisters(){
+        return cashRegisters;
+    }
+
     private List<CashRegister> cashRegisters = new ArrayList<>();
     private List<CashRegister> backupCashRegisters = new ArrayList<>();
     private List<Entrance> entrances = new ArrayList<>();
