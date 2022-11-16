@@ -4,7 +4,6 @@ import ua.pz33.rendering.GameCanvas;
 import ua.pz33.utils.configuration.ConfigurationListener;
 import ua.pz33.utils.configuration.ConfigurationMediator;
 import ua.pz33.utils.configuration.PropertyChangedEventArgs;
-import ua.pz33.utils.configuration.PropertyRegistry;
 
 import javax.swing.*;
 import java.awt.*;
@@ -50,6 +49,8 @@ public class ConfigPanel extends JPanel implements ConfigurationListener {
         JTextField serviceTimeField = new JTextField("10");
         serviceTimeField.setAlignmentX(LEFT_ALIGNMENT);
         serviceTimeField.setMaximumSize(new Dimension(Integer.MAX_VALUE, ticksPerClientField.getPreferredSize().height));
+        save.addActionListener(e -> configs().setValue(TICKS_PER_SERVICE, Integer.parseInt(serviceTimeField.getText())));
+
         //Expected amount of people
         JTextField expectedPeopleField = new JTextField("6");
         expectedPeopleField.setAlignmentX(LEFT_ALIGNMENT);
