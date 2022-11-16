@@ -36,7 +36,7 @@ public class MainFrame extends JFrame {
         canvas = createGameCanvas();
         content.add(canvas);
 
-        var configPanel = new ConfigPanel();
+        var configPanel = new ConfigPanel(canvas);
         c.weightx = 1;
         c.gridx = 2;
         content.add(configPanel, c);
