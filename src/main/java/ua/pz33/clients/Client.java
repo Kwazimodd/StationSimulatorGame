@@ -12,7 +12,6 @@ import ua.pz33.utils.logs.LogMediator;
 import java.awt.*;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.List;
 
 public class Client implements ClockObserver {
     private Integer id;
@@ -54,15 +53,7 @@ public class Client implements ClockObserver {
             bestCashRegister = StationController.getInstance().getCashRegister(closestCashRegisterSprite.getId());
         }
 
-        if (bestCashRegister.tryAddToQueue(this)) {
-            var cashRegisterSprite = StationController.getInstance().getCashRegisterSprite(bestCashRegister.getId());
-            goalPoint = new Point(cashRegisterSprite.getX(), cashRegisterSprite.getY());
-            cashRegister = bestCashRegister;
-            return true;
-        }
-        else {
-            return false;
-        }
+        return bestCashRegister.tryAddToQueue(this);
     }
 
     public void changeState(State state) {
