@@ -31,13 +31,9 @@ public class Main {
         //EventQueue.invokeLater(Main::initializeSprites);
         //EventQueue.invokeLater(Main::initClient);
 
-        Entrance entrance = new Entrance();
-        entrance.setBounds(new Rectangle(150, 500, 50, 50));
         Exit exit = new Exit();
-        exit.setBounds(new Rectangle(250, 500, 50, 50));
-        //StationController.getInstance().addExit(exit);
-        //StationController.getInstance().addEntrance(entrance);
-        //StationController.getInstance().addCashRegister(250, 100);
+        exit.setBounds(new Rectangle(260, 470, 80, 80));
+        StationController.getInstance().addExit(exit);
         GameClock.getInstance().addObserver(ClientGenerator.getInstance());
         GameClock.getInstance().startTimer();
 
