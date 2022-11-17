@@ -10,8 +10,8 @@ public class ServicedState extends State {
     @Override
     public void perform() {
         //todo if client is servicing, do nothing -- there could be error
-        if(client.getCountOfTickets() == 0){
-            client.changeState(new IdleState(client));
+        if(client.wasServiced()){
+            client.changeState(new MovingState(client));
         }
     }
 }
