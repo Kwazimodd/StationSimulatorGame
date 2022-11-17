@@ -5,7 +5,5 @@ public final class PropertyRegistry {
     public static final String ENTRANCE_POSITION = "entrancePosition";
     public static final String TICKS_PER_CLIENT = "ticksPerClient";
     public static final String TICKS_PER_SERVICE = "ticksPerService";
-
-    public static final String LAST_MOUSE_CLICK_POSITION = "lastMouseClickPosition";
     public static final String IS_PAUSED = "isPaused";
 }
