@@ -99,11 +99,7 @@ public class CashRegister implements ClockObserver {
 
     public void open() {
         currentState = CashRegisterState.Open;
-        if (isBackup) {
-            StationController.getInstance().getBackupCashRegisterSprite(id).setSprite(ResourceLoader.getInstance().loadImage("CashRegisterReserved200X200.png"));
-        }
-        else
-        {
+        if (!isBackup) {
             StationController.getInstance().getCashRegisterSprite(id).setSprite(ResourceLoader.getInstance().loadImage("CashRegister200X200.png"));
         }
     }
