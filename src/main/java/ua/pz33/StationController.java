@@ -222,10 +222,17 @@ public class StationController {
             clientX += dirX * stepX;
             clientY += dirY * stepY;
 
+            Point src = client.getBounds().getLocation();
+            Point dest = new Point(clientX, clientY);
+
+            if (src.equals(dest)) {
+                continue;
+            }
+
             animController.beginAnimation(client, new Storyboard.Builder()
                     .withDuration(1_000)
                     .withAnimations(new PositionAnimation.Builder()
-                            .withBounds(client.getBounds().getLocation(), new Point(clientX, clientY))
+                            .withBounds(src, dest)
                             .withProperty((s, p) -> s.getBounds().setLocation(p))
                             .build())
                     .build());
