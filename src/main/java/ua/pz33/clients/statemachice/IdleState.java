@@ -15,7 +15,11 @@ public class IdleState extends State {
     @Override
     public void perform() {
         Collection<CashRegister> cashRegisters = StationController.getInstance().getCashRegisters();
+
         if (client.tryChooseCashRegister(cashRegisters)) {
+            client.changeState(new MovingState(client));
+        }
+        else if(client.tryChooseCashRegister(StationController.getInstance().getBackupCashRegisters())){
             client.changeState(new MovingState(client));
         }
     }

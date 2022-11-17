@@ -10,6 +10,7 @@ import ua.pz33.clients.statemachice.State;
 import ua.pz33.utils.logs.LogMediator;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -29,8 +30,8 @@ public class Client implements ClockObserver {
         this.currentState = new IdleState(this);
     }
 
-    public void buyTickets() {
-        var message = String.format("Client %d bought %d tickets", id, countOfTickets);
+    public void buyTickets(CashRegister cashRegister) {
+        var message = String.format("Client %d bought %d tickets in cashregister %d", id, countOfTickets, cashRegister.getId());
         countOfTickets = 0;
         LogMediator.getInstance().logMessage(message);
     }
@@ -39,26 +40,28 @@ public class Client implements ClockObserver {
         //check if all cash registers have same number of people in queue
         var sortedCashRegisters = cashRegisters.stream().filter(c -> c.isOpen()).sorted(countInQueueComparator).toList();
 
-        var bestCashRegister = sortedCashRegisters.get(0);
-        var count = bestCashRegister.getClientsQueue().size();
-        var allHaveSameCount = sortedCashRegisters.stream().allMatch(c -> c.getClientsQueue().size() == count);
-
-        if(allHaveSameCount){
-            //todo choose the closest
-            var cashRegistersSpriteList =  StationController.getInstance().getCashRegisterSprites();
-            var closestCashRegisterSprite = cashRegistersSpriteList.stream().min(closestCashRegisterComparator).get();
-            bestCashRegister = StationController.getInstance().getCashRegister(closestCashRegisterSprite.getId());
-        }
-
-        if (bestCashRegister.tryAddToQueue(this)) {
-            var cashRegisterSprite = StationController.getInstance().getCashRegisterSprite(bestCashRegister.getId());
-            goalPoint = new Point(cashRegisterSprite.getX(), cashRegisterSprite.getY());
-            cashRegister = bestCashRegister;
-            return true;
-        }
-        else {
+        if(sortedCashRegisters.isEmpty()){
             return false;
         }
+
+        var count = sortedCashRegisters.get(0).getClientsQueue().size();
+        var filteredCashRegisters = sortedCashRegisters.stream().filter(c -> c.getClientsQueue().size() == count).toList();
+
+        var isBackup = filteredCashRegisters.get(0).isBackup();
+
+        List<CashRegisterSprite> openedCashRegisterSprites = new ArrayList<>();
+
+        filteredCashRegisters.forEach(c -> openedCashRegisterSprites.add(isBackup
+                ? StationController.getInstance().getBackupCashRegisterSprite(c.getId())
+                : StationController.getInstance().getCashRegisterSprite(c.getId())));
+
+        //todo choose the closest
+        var closestCashRegisterSprite = openedCashRegisterSprites.stream().min(closestCashRegisterComparator).get();
+        var bestCashRegister = isBackup
+                ? StationController.getInstance().getBackupCashRegister(closestCashRegisterSprite.getId())
+                : StationController.getInstance().getCashRegister(closestCashRegisterSprite.getId());
+
+        return bestCashRegister.tryAddToQueue(this);
     }
 
     public void changeState(State state) {
