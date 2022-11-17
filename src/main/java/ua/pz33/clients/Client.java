@@ -10,8 +10,10 @@ import ua.pz33.clients.statemachice.State;
 import ua.pz33.utils.logs.LogMediator;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.List;
 
 public class Client implements ClockObserver {
     private Integer id;
@@ -42,16 +44,22 @@ public class Client implements ClockObserver {
             return false;
         }
 
-        var bestCashRegister = sortedCashRegisters.get(0);
-        var count = bestCashRegister.getClientsQueue().size();
-        var allHaveSameCount = sortedCashRegisters.stream().allMatch(c -> c.getClientsQueue().size() == count);
+        var count = sortedCashRegisters.get(0).getClientsQueue().size();
+        var filteredCashRegisters = sortedCashRegisters.stream().filter(c -> c.getClientsQueue().size() == count).toList();
 
-        if(allHaveSameCount){
-            //todo choose the closest
-            var cashRegistersSpriteList =  StationController.getInstance().getCashRegisterSprites();
-            var closestCashRegisterSprite = cashRegistersSpriteList.stream().min(closestCashRegisterComparator).get();
-            bestCashRegister = StationController.getInstance().getCashRegister(closestCashRegisterSprite.getId());
-        }
+        var isBackup = filteredCashRegisters.get(0).isBackup();
+
+        List<CashRegisterSprite> openedCashRegisterSprites = new ArrayList<>();
+
+        filteredCashRegisters.forEach(c -> openedCashRegisterSprites.add(isBackup
+                ? StationController.getInstance().getBackupCashRegisterSprite(c.getId())
+                : StationController.getInstance().getCashRegisterSprite(c.getId())));
+
+        //todo choose the closest
+        var closestCashRegisterSprite = openedCashRegisterSprites.stream().min(closestCashRegisterComparator).get();
+        var bestCashRegister = isBackup
+                ? StationController.getInstance().getBackupCashRegister(closestCashRegisterSprite.getId())
+                : StationController.getInstance().getCashRegister(closestCashRegisterSprite.getId());
 
         return bestCashRegister.tryAddToQueue(this);
     }

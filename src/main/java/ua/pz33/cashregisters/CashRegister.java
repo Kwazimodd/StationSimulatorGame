@@ -55,10 +55,10 @@ public class CashRegister implements ClockObserver {
             return;
         }
 
-        boolean cashRegistersHasOpen = StationController.getInstance().getCashRegisters().stream().anyMatch(c->c.isOpen());
+        boolean existOpenedCashRegisters = StationController.getInstance().getCashRegisters().stream().anyMatch(c->c.isOpen());
 
         if (clientsQueue.isEmpty()) {
-            if(isBackup && cashRegistersHasOpen){
+            if(isBackup && existOpenedCashRegisters){
                 close();
             }
             return;
@@ -130,13 +130,16 @@ public class CashRegister implements ClockObserver {
         return id;
     }
 
+    public boolean isBackup(){
+        return isBackup;
+    }
     @Override
     public void onTick() {
         //random close
         if(!triedClose && isOpen() && !isBackup){
             var res = random.nextInt(10);
 
-            if (res < 7) {
+            if (res < 1) {
                 LogMediator.getInstance().logMessage("Cashregiser " + id + " was broken.");
                 close();
                 GameClock.getInstance().postExecute(50, () -> open());
@@ -152,7 +155,9 @@ public class CashRegister implements ClockObserver {
 
     private void addToQueueInternal(Client client) {
         clientsQueue.add(client);
-        var cashRegisterSprite = StationController.getInstance().getCashRegisterSprite(this.getId());
+        var cashRegisterSprite = isBackup
+                ? StationController.getInstance().getBackupCashRegisterSprite(this.getId())
+                : StationController.getInstance().getCashRegisterSprite(this.getId());
         client.setGoalPoint(new Point(cashRegisterSprite.getX(), cashRegisterSprite.getY()));
         client.setCashRegister(this);
         client.changeState(new MovingState(client));
