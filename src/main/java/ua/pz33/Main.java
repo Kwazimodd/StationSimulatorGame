@@ -30,6 +30,12 @@ public class Main {
         // Invoke on Main thread
         //EventQueue.invokeLater(Main::initializeSprites);
         //EventQueue.invokeLater(Main::initClient);
+        Entrance entrance = new Entrance();
+        entrance.setBounds(new Rectangle(170, 470, 80, 80));
+        StationController.getInstance().addEntrance(entrance);
+        StationController.getInstance().addCashRegister(100, 100);
+        StationController.getInstance().addBackupCashRegister(300, 100);
+
 
         Exit exit = new Exit();
         exit.setBounds(new Rectangle(260, 470, 80, 80));

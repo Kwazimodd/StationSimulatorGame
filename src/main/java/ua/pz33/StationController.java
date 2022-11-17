@@ -115,20 +115,20 @@ public class StationController {
         SpriteRegistry.getInstance().registerSprite(cashRegisterSprite);
         cashRegisterSprites.put(cashRegisterSprite.getId(), cashRegisterSprite);
 
-        var client4 = new Client(4, 3, ClientStatus.INVALID);
-        var client6 = new Client(6, 3, ClientStatus.REGULAR);
-        var client2 = new Client(2, 3, ClientStatus.REGULAR);
-        var client5 = new Client(5, 3, ClientStatus.HAS_KIDS);
-
-        addClient(client4, new Point(20, 20));
-        addClient(client6, new Point(20, 20));
-        addClient(client2, new Point(20, 20));
-        addClient(client5, new Point(20, 20));
-
-        cashRegister.tryAddToQueue(client4);
-        cashRegister.tryAddToQueue(client6);
-        cashRegister.tryAddToQueue(client2);
-        cashRegister.tryAddToQueue(client5);
+//        var client4 = new Client(4, 3, ClientStatus.INVALID);
+//        var client6 = new Client(6, 3, ClientStatus.REGULAR);
+//        var client2 = new Client(2, 3, ClientStatus.REGULAR);
+//        var client5 = new Client(5, 3, ClientStatus.HAS_KIDS);
+//
+//        addClient(client4, new Point(20, 20));
+//        addClient(client6, new Point(20, 20));
+//        addClient(client2, new Point(20, 20));
+//        addClient(client5, new Point(20, 20));
+//
+//        cashRegister.tryAddToQueue(client4);
+//        cashRegister.tryAddToQueue(client6);
+//        cashRegister.tryAddToQueue(client2);
+//        cashRegister.tryAddToQueue(client5);
     }
 
     public void addBackupCashRegister(int x, int y) {

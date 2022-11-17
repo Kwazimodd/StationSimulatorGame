@@ -2,6 +2,7 @@ package ua.pz33.cashregisters;
 
 import ua.pz33.StationController;
 import ua.pz33.clients.Client;
+import ua.pz33.clients.statemachice.ServicedState;
 import ua.pz33.utils.clock.ClockObserver;
 import ua.pz33.utils.clock.GameClock;
 import ua.pz33.utils.configuration.ConfigurationMediator;
@@ -73,6 +74,10 @@ public class CashRegister implements ClockObserver {
     }
 
     public static Comparator<Client> statusComparator = (c1, c2) -> {
+        var statusCompareResultState = c1.getCurrentState() instanceof ServicedState;
+        if(statusCompareResultState)
+            return 1;
+
         var statusCompareResult = c1.getStatus().compareTo(c2.getStatus());
         if (statusCompareResult == 0) {
             return c1.getId().compareTo(c2.getId());
