@@ -143,7 +143,7 @@ public class StationController {
         backupCashRegisterSprites.put(cashRegister.getId(), cashRegisterSprite);
     }
 
-    public void removeClient(Client client){
+    public void removeClient(Client client) {
         var clientSprite = clientSprites.get(client.getId());
         SpriteRegistry.getInstance().removeSprite(clientSprite);
 
@@ -176,10 +176,14 @@ public class StationController {
         return backupCashRegisterSprites.get(id);
     }
 
-    public void onQueueUpdated(CashRegister register, Collection<Client> clientsQueue) {
-        var clients = new ArrayList<>(clientsQueue).stream()
-                .map(this::getClientSprite)
-                .toList();
+    public void onQueueUpdated(CashRegister register, PriorityQueue<Client> clientsQueue) {
+        var duplicate = new PriorityQueue<Client>(clientsQueue.comparator());
+        duplicate.addAll(clientsQueue);
+
+        var clients = new ArrayList<ClientSprite>();
+        for (Client c = duplicate.poll(); c != null; c = duplicate.poll()) {
+            clients.add(getClientSprite(c));
+        }
 
         var crSprite = getCashRegisterSprite(register);
 
