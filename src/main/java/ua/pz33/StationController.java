@@ -52,7 +52,7 @@ public class StationController {
         clients.put(client.getId(), client);
 
         ClientSprite clientSprite = new ClientSprite(client);
-        clientSprite.setBounds(new Rectangle(entrance.getX(), entrance.getY(), 50, 50));
+        clientSprite.setBounds(new Rectangle(entrance.getX(), entrance.getY(), 80, 80));
 
         SpriteRegistry.getInstance().registerSprite(clientSprite);
         clientSprites.put(clientSprite.getId(), clientSprite);
@@ -108,7 +108,7 @@ public class StationController {
         CashRegisterSprite cashRegisterSprite = new CashRegisterSprite(cashRegister.getId(), "CashRegisterReserved200X200.png");
         cashRegisterSprite.setBounds(new Rectangle(x, y, 100, 100));
         SpriteRegistry.getInstance().registerSprite(cashRegisterSprite);
-        cashRegisterSprites.put(cashRegister.getId(), cashRegisterSprite);
+        backupCashRegisterSprites.put(cashRegister.getId(), cashRegisterSprite);
     }
 
     public Collection<CashRegister> getCashRegisters() {

@@ -1,10 +1,10 @@
 package ua.pz33;
 
 import ua.pz33.rendering.GameCanvas;
+import ua.pz33.sprites.Entrance;
 import ua.pz33.utils.configuration.ConfigurationListener;
 import ua.pz33.utils.configuration.ConfigurationMediator;
 import ua.pz33.utils.configuration.PropertyChangedEventArgs;
-import ua.pz33.utils.configuration.PropertyRegistry;
 
 import javax.swing.*;
 import java.awt.*;
@@ -73,10 +73,7 @@ public class ConfigPanel extends JPanel implements ConfigurationListener {
         addCashRegisterButton.addActionListener(e -> canvas.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-                configs().setValue(LAST_MOUSE_CLICK_POSITION, new Point(e.getX(), e.getY()));
-
-                //console log
-                System.out.println("Put Cash Register at position: " + configs().getValueOrDefault(LAST_MOUSE_CLICK_POSITION, null).toString());
+                StationController.getInstance().addCashRegister(e.getX() - 50, e.getY() - 50);
                 canvas.removeMouseListener(this);
             }
         }));
@@ -86,9 +83,7 @@ public class ConfigPanel extends JPanel implements ConfigurationListener {
         addReserveCashRegisterButton.addActionListener(e -> canvas.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-                configs().setValue(LAST_MOUSE_CLICK_POSITION, new Point(e.getX(), e.getY()));
-                //console log
-                System.out.println("Put Reserved Cash Register at position: " + configs().getValueOrDefault(LAST_MOUSE_CLICK_POSITION, null).toString());
+                StationController.getInstance().addBackupCashRegister(e.getX() - 50, e.getY() - 50);
                 canvas.removeMouseListener(this);
             }
         }));
@@ -98,9 +93,9 @@ public class ConfigPanel extends JPanel implements ConfigurationListener {
         addEntranceButton.addActionListener(e -> canvas.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-                configs().setValue(LAST_MOUSE_CLICK_POSITION, new Point(e.getX(), e.getY()));
-                //console log
-                System.out.println("Put Entrance at position: " + configs().getValueOrDefault(LAST_MOUSE_CLICK_POSITION, null).toString());
+                Entrance entrance = new Entrance();
+                entrance.setBounds(new Rectangle(e.getX() - 40, e.getY() - 40, 80, 80));
+                StationController.getInstance().addEntrance(entrance);
                 canvas.removeMouseListener(this);
             }
         }));
@@ -114,7 +109,13 @@ public class ConfigPanel extends JPanel implements ConfigurationListener {
         addItemsPanel.add(addReserveCashRegisterButton);
 
         startButton = new JButton("Start");
-        startButton.addActionListener(e -> configs().setValue(IS_PAUSED, false));
+        startButton.addActionListener(e -> {
+            if (StationController.getInstance().getCashRegisters().size() > 0
+                && StationController.getInstance().getBackupCashRegisters().size() > 0
+                && StationController.getInstance().getEntrances().size() > 0) {
+                configs().setValue(IS_PAUSED, false);
+            }
+        });
 
         pauseButton = new JButton("Pause");
         pauseButton.addActionListener(e -> configs().setValue(IS_PAUSED, true));
