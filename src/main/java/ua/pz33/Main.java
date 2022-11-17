@@ -5,6 +5,7 @@ import ua.pz33.rendering.RenderTimer;
 import ua.pz33.rendering.SpriteRegistry;
 import ua.pz33.rendering.animation.AnimationController;
 import ua.pz33.rendering.animation.IntAnimation;
+import ua.pz33.rendering.animation.PositionAnimation;
 import ua.pz33.rendering.animation.Storyboard;
 import ua.pz33.rendering.animation.interpolation.Interpolators;
 import ua.pz33.sprites.*;
@@ -44,18 +45,20 @@ public class Main {
 
         var regularDude = new ClientSprite("BodyExempt200X200.png", 15);
         regularDude.setBounds(new Rectangle(300, 300, 90, 90));
-        regularDude.moveTo(0, 0);
+        //regularDude.moveTo(0, 0);
 
         var vipDude = new ClientSprite("BodyVIP200X200.png", 15);
         vipDude.setBounds(new Rectangle(55, 45, 90, 90));
-        vipDude.moveTo(300, 300);
+        //vipDude.moveTo(300, 300);
 
         var cashRegister = new CashRegisterSprite("CashRegister200X200.png", 15);
         cashRegister.setBounds(new Rectangle(0, 100, 90, 90));
 
-        spriteRegistry.registerSprite(regularDude);
-        spriteRegistry.registerSprite(vipDude);
-        spriteRegistry.registerSprite(cashRegister);
+        StationController.getInstance().addCashRegister(50, 320);
+
+        //spriteRegistry.registerSprite(regularDude);
+        //spriteRegistry.registerSprite(vipDude);
+        //spriteRegistry.registerSprite(cashRegister);
     }
 
     private static void initializeSprites() {
@@ -82,28 +85,24 @@ public class Main {
         ImageSprite dumbDude = new ImageSprite("BodyVIP200X200.png", 15);
         dumbDude.setBounds(new Rectangle(55, 45, 50, 50));
 
-        var anim = new Storyboard.Builder()
+        /*var anim = new Storyboard.Builder()
                 .withDuration(800)
                 .withInterpolator(Interpolators.SIN_PI_X_HALF)
                 .withAnimations(
-                        new IntAnimation.Builder()
-                                .withBounds(155, 255)
-                                .withProperty(Sprite::setX)
-                                .build(),
-                        new IntAnimation.Builder()
-                                .withBounds(145, 245)
-                                .withProperty(Sprite::setY)
-                                .build())
-                .build();
+                        new PositionAnimation.Builder()
+                        .withBounds(new Point(155, 145), new Point(255, 245))
+                        .withProperty((s, p) -> s.getBounds().setLocation(p))
+                        .build())
+                .build();*/
 
 
-        AnimationController.getInstance().beginAnimation(greenCircle, anim);
+        //AnimationController.getInstance().beginAnimation(greenCircle, anim);
 
-        spriteRegistry.registerSprite(magentaCircle);
-        spriteRegistry.registerSprite(orangeCircle);
-        spriteRegistry.registerSprite(pinkCircle);
-        spriteRegistry.registerSprite(blueCircle);
-        spriteRegistry.registerSprite(greenCircle);
+        //spriteRegistry.registerSprite(magentaCircle);
+        //spriteRegistry.registerSprite(orangeCircle);
+        //spriteRegistry.registerSprite(pinkCircle);
+        //spriteRegistry.registerSprite(blueCircle);
+        //spriteRegistry.registerSprite(greenCircle);
         spriteRegistry.registerSprite(dumbDude);
     }
 }

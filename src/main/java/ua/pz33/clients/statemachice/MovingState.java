@@ -13,7 +13,7 @@ public class MovingState extends State {
 
     @Override
     public void perform() {
-        var clientSprite = StationController.getInstance().getClientSprite(client.getId()).get();
+        var clientSprite = StationController.getInstance().getClientSprite(client.getId());
         var goalPoint = client.getGoalPoint();
 
         if (client.wasServiced()) {

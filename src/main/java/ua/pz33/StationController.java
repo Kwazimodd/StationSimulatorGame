@@ -2,7 +2,12 @@ package ua.pz33;
 
 import ua.pz33.cashregisters.CashRegister;
 import ua.pz33.clients.Client;
+import ua.pz33.clients.ClientStatus;
 import ua.pz33.rendering.SpriteRegistry;
+import ua.pz33.rendering.animation.AnimationController;
+import ua.pz33.rendering.animation.IntAnimation;
+import ua.pz33.rendering.animation.PositionAnimation;
+import ua.pz33.rendering.animation.Storyboard;
 import ua.pz33.sprites.CashRegisterSprite;
 import ua.pz33.sprites.ClientSprite;
 import ua.pz33.sprites.Entrance;
@@ -14,6 +19,14 @@ import java.util.*;
 import java.util.List;
 
 public class StationController {
+    private static final int SPRITE_SIZE = 50;
+    private static final int SPRITE_SPACING_X = -15;
+    private static final int SPRITE_SPACING_Y = 0;
+    private static final int CENTER_X = 300;
+    private static final int CENTER_Y = 300;
+
+    private final AnimationController animController;
+
     private final Map<Integer, CashRegister> cashRegisters = new HashMap<>();
     private final Map<Integer, CashRegisterSprite> cashRegisterSprites = new HashMap<>();
     private final Map<Integer, CashRegister> backupCashRegisters = new HashMap<>();
@@ -32,6 +45,10 @@ public class StationController {
         return instance;
     }
 
+    private StationController() {
+        animController = AnimationController.getInstance();
+    }
+
     public void moveQueue(PriorityQueue<Client> clientsQueue) {
         // Find backup cash register with minimum queue size.
         Optional<CashRegister> bestBackupCashRegister = backupCashRegisters.values().stream().min(
@@ -47,12 +64,12 @@ public class StationController {
         clientsQueue.clear();
     }
 
-    public void addClient(Client client, Entrance entrance) {
+    public void addClient(Client client, Point entrance) {
         GameClock.getInstance().addObserver(client);
         clients.put(client.getId(), client);
 
         ClientSprite clientSprite = new ClientSprite(client);
-        clientSprite.setBounds(new Rectangle(entrance.getX(), entrance.getY(), 80, 80));
+        clientSprite.setBounds(new Rectangle((int) entrance.getX(), (int) entrance.getY(), 50, 50));
 
         SpriteRegistry.getInstance().registerSprite(clientSprite);
         clientSprites.put(clientSprite.getId(), clientSprite);
@@ -66,8 +83,8 @@ public class StationController {
         return clientSprites.values();
     }
 
-    public Optional<ClientSprite> getClientSprite(int id) {
-        return clientSprites.values().stream().filter(clientSprite -> clientSprite.getId() == id).findFirst();
+    public ClientSprite getClientSprite(int id) {
+        return clientSprites.get(id);
     }
 
     public void addEntrance(Entrance entrance) {
@@ -94,9 +111,24 @@ public class StationController {
         GameClock.getInstance().addObserver(cashRegister);
 
         CashRegisterSprite cashRegisterSprite = new CashRegisterSprite(cashRegister.getId(), "CashRegister200X200.png");
-        cashRegisterSprite.setBounds(new Rectangle(x, y, 100, 100));
+        cashRegisterSprite.setBounds(new Rectangle(x, y, 50, 50));
         SpriteRegistry.getInstance().registerSprite(cashRegisterSprite);
         cashRegisterSprites.put(cashRegisterSprite.getId(), cashRegisterSprite);
+
+        var client4 = new Client(4, 3, ClientStatus.INVALID);
+        var client6 = new Client(6, 3, ClientStatus.REGULAR);
+        var client2 = new Client(2, 3, ClientStatus.REGULAR);
+        var client5 = new Client(5, 3, ClientStatus.HAS_KIDS);
+
+        addClient(client4, new Point(20, 20));
+        addClient(client6, new Point(20, 20));
+        addClient(client2, new Point(20, 20));
+        addClient(client5, new Point(20, 20));
+
+        cashRegister.tryAddToQueue(client4);
+        cashRegister.tryAddToQueue(client6);
+        cashRegister.tryAddToQueue(client2);
+        cashRegister.tryAddToQueue(client5);
     }
 
     public void addBackupCashRegister(int x, int y) {
@@ -106,7 +138,7 @@ public class StationController {
         GameClock.getInstance().addObserver(cashRegister);
 
         CashRegisterSprite cashRegisterSprite = new CashRegisterSprite(cashRegister.getId(), "CashRegisterReserved200X200.png");
-        cashRegisterSprite.setBounds(new Rectangle(x, y, 100, 100));
+        cashRegisterSprite.setBounds(new Rectangle(x, y, 50, 50));
         SpriteRegistry.getInstance().registerSprite(cashRegisterSprite);
         backupCashRegisterSprites.put(cashRegister.getId(), cashRegisterSprite);
     }
@@ -142,5 +174,54 @@ public class StationController {
 
     public CashRegisterSprite getBackupCashRegisterSprite(int id) {
         return backupCashRegisterSprites.get(id);
+    }
+
+    public void onQueueUpdated(CashRegister register, Collection<Client> clientsQueue) {
+        var clients = new ArrayList<>(clientsQueue).stream()
+                .map(this::getClientSprite)
+                .toList();
+
+        var crSprite = getCashRegisterSprite(register);
+
+        layoutCashRegister(crSprite, clients);
+    }
+
+    private ClientSprite getClientSprite(Client client) {
+        return getClientSprite(client.getId());
+    }
+
+    private CashRegisterSprite getCashRegisterSprite(CashRegister register) {
+        return getCashRegisterSprite(register.getId());
+    }
+
+    private void layoutCashRegister(CashRegisterSprite register, List<ClientSprite> clients) {
+        int dirX = 0, dirY = 0;
+
+        int deltaX = Math.abs(register.getX() - CENTER_X);
+        int deltaY = Math.abs(register.getY() - CENTER_Y);
+
+        if (deltaX > deltaY) {
+            dirX = register.getX() > CENTER_X ? -1 : 1;
+        } else {
+            dirY = register.getY() > CENTER_Y ? -1 : 1;
+        }
+
+        int stepX = SPRITE_SIZE + SPRITE_SPACING_X;
+        int stepY = SPRITE_SIZE + SPRITE_SPACING_Y;
+
+        int clientX = register.getX() - SPRITE_SPACING_X * dirX * dirX, clientY = register.getY();
+
+        for (var client : clients) {
+            clientX += dirX * stepX;
+            clientY += dirY * stepY;
+
+            animController.beginAnimation(client, new Storyboard.Builder()
+                    .withDuration(1_000)
+                    .withAnimations(new PositionAnimation.Builder()
+                            .withBounds(client.getBounds().getLocation(), new Point(clientX, clientY))
+                            .withProperty((s, p) -> s.getBounds().setLocation(p))
+                            .build())
+                    .build());
+        }
     }
 }
