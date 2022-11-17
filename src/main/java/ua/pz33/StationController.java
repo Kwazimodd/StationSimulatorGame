@@ -111,6 +111,15 @@ public class StationController {
         cashRegisterSprites.put(cashRegister.getId(), cashRegisterSprite);
     }
 
+    public void removeClient(Client client){
+        var clientSprite = clientSprites.get(client.getId());
+        SpriteRegistry.getInstance().removeSprite(clientSprite);
+
+        clientSprites.remove(clientSprite.getId());
+        clients.remove(client.getId());
+    }
+
+
     public Collection<CashRegister> getCashRegisters() {
         return cashRegisters.values();
     }

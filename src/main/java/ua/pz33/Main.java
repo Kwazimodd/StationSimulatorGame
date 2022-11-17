@@ -27,8 +27,8 @@ public class Main {
         ConfigurationMediator.getInstance().addListener(pArgs -> LogMediator.getInstance().logMessage("Property " + pArgs.getPropertyName() + " has changed from '" + pArgs.getOldValue() + "' to '" + pArgs.getNewValue() + "'"));
 
         // Invoke on Main thread
-        EventQueue.invokeLater(Main::initializeSprites);
-        EventQueue.invokeLater(Main::initClient);
+        //EventQueue.invokeLater(Main::initializeSprites);
+        //EventQueue.invokeLater(Main::initClient);
 
         Entrance entrance = new Entrance();
         entrance.setBounds(new Rectangle(150, 500, 50, 50));

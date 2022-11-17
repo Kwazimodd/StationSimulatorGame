@@ -7,14 +7,16 @@ import ua.pz33.utils.configuration.PropertyChangedEventArgs;
 import java.awt.*;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static ua.pz33.utils.configuration.PropertyRegistry.IS_PAUSED;
 
 public class GameClock implements ConfigurationListener {
     private static final int TICKS_PER_SECOND = 10;
 
-    private final List<WeakReference<ClockObserver>> observers = new ArrayList<>();
+    private final List<WeakReference<ClockObserver>> observers = new CopyOnWriteArrayList<>();
     private final List<ClockObserver> delayedRunners = new ArrayList<>();
     private final Thread clockThread;
 
@@ -34,7 +36,7 @@ public class GameClock implements ConfigurationListener {
 
         while (true) {
             if (!isPaused) {
-                EventQueue.invokeLater(this::onTick);
+                this.onTick();
             }
 
             var delta = System.currentTimeMillis() - currMillis;
@@ -82,7 +84,7 @@ public class GameClock implements ConfigurationListener {
             var observer = observerWeakReference.get();
 
             if (observer == null) {
-                observers.remove(observerWeakReference);
+                //observers.remove(observerWeakReference);
 
                 continue;
             }
