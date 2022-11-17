@@ -38,6 +38,7 @@ public class ClientGenerator implements ClockObserver {
 
     private ClientGenerator() {
         position = config().getValueOrDefault(PropertyRegistry.ENTRANCE_POSITION, new Point(0, 0));
+        //todo return normal count of people
         maxAmountOfClients = config().getValueOrDefault(PropertyRegistry.MAX_AMOUNT_OF_CLIENTS, 20);
         ticksPerClient = config().getValueOrDefault(PropertyRegistry.TICKS_PER_CLIENT, 20);
 

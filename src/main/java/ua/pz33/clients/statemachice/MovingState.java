@@ -7,6 +7,8 @@ import ua.pz33.sprites.Exit;
 import java.awt.*;
 
 public class MovingState extends State {
+
+    private boolean executedAnimation = false;
     public MovingState(Client client) {
         super(client);
     }
@@ -32,10 +34,14 @@ public class MovingState extends State {
 
         //todo to test if position of client sprite is position of service, cashregister.service() can be executed
         if (clientSprite.getX() == goalPoint.x && clientSprite.getY() == goalPoint.y) {
-            //client.changeState(new ServicedState(client));
+            client.changeState(new ServicedState(client));
             return;
         }
 
-        clientSprite.moveTo(goalPoint.x, goalPoint.y);
+        if(executedAnimation)
+            return;
+
+        //clientSprite.moveTo(goalPoint.x, goalPoint.y);
+        executedAnimation = true;
     }
 }
