@@ -115,8 +115,8 @@ public class StationController {
         var clientSprite = clientSprites.get(client.getId());
         SpriteRegistry.getInstance().removeSprite(clientSprite);
 
-        clientSprites.remove(clientSprite);
-        clients.remove(client);
+        clientSprites.remove(clientSprite.getId());
+        clients.remove(client.getId());
     }
 
 

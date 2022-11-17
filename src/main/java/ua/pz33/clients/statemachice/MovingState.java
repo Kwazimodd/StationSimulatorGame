@@ -20,7 +20,7 @@ public class MovingState extends State {
             var exit = StationController.getInstance().getExit();
             var exitPoint = new Point(exit.getX(), exit.getY());
             client.setGoalPoint(exitPoint);
-            clientSprite.moveTo(goalPoint.x, goalPoint.y);
+            clientSprite.moveTo(exitPoint.x, exitPoint.y);
             client.changeState(new ExitState(client));
             return;
         }
@@ -32,7 +32,7 @@ public class MovingState extends State {
 
         //todo to test if position of client sprite is position of service, cashregister.service() can be executed
         if (clientSprite.getX() == goalPoint.x && clientSprite.getY() == goalPoint.y) {
-            client.changeState(new ServicedState(client));
+            //client.changeState(new ServicedState(client));
             return;
         }
 
