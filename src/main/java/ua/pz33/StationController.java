@@ -3,6 +3,7 @@ package ua.pz33;
 import ua.pz33.cashregisters.CashRegister;
 import ua.pz33.clients.Client;
 import ua.pz33.clients.ClientStatus;
+import ua.pz33.generators.ClientGenerator;
 import ua.pz33.rendering.SpriteRegistry;
 import ua.pz33.rendering.animation.AnimationController;
 import ua.pz33.rendering.animation.IntAnimation;
@@ -149,6 +150,8 @@ public class StationController {
 
         clientSprites.remove(clientSprite.getId());
         clients.remove(client.getId());
+
+        ClientGenerator.getInstance().clientCount--;
     }
 
 
