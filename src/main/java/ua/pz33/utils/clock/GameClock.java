@@ -17,7 +17,7 @@ import static ua.pz33.utils.configuration.PropertyRegistry.IS_PAUSED;
 public class GameClock implements ConfigurationListener {
     private static final int TICKS_PER_SECOND = 10;
 
-    private final List<WeakReference<ClockObserver>> observers = new CopyOnWriteArrayList<>();
+    private final List<WeakReference<ClockObserver>> observers = new ArrayList<>();
     private final List<PostExecuteObserver> delayedRunners = new ArrayList<>();
     private final Thread clockThread;
 
@@ -85,8 +85,6 @@ public class GameClock implements ConfigurationListener {
             var observer = observerWeakReference.get();
 
             if (observer == null) {
-                //observers.remove(observerWeakReference);
-
                 continue;
             }
 
@@ -102,6 +100,11 @@ public class GameClock implements ConfigurationListener {
             } catch (Exception ignored) {
             }
         }
+
+        observers.stream()
+                .filter(wr -> wr.get() == null)
+                .collect(Collectors.toList())
+                .forEach(observers::remove);
 
         delayedRunners.stream()
                 .filter(PostExecuteObserver::canBeDeleted)
