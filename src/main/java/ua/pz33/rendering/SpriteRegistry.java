@@ -58,6 +58,10 @@ public class SpriteRegistry {
         sprites.add(r, sprite);
     }
 
+    public void removeSprite(Sprite sprite){
+        sprites.remove(sprite);
+    }
+
     public Iterable<Sprite> getRegisteredSprites() {
         return sprites;
     }

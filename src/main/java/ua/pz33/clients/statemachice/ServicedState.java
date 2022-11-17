@@ -11,7 +11,7 @@ public class ServicedState extends State {
     public void perform() {
         //todo if client is servicing, do nothing -- there could be error
         if(client.getCountOfTickets() == 0){
-            client.changeState(new IdleState(client));
+            client.changeState(new MovingState(client));
         }
     }
 }
