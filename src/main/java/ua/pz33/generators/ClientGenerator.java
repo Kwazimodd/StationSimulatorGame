@@ -10,21 +10,22 @@ import ua.pz33.utils.configuration.PropertyChangedEventArgs;
 import ua.pz33.utils.configuration.PropertyRegistry;
 import ua.pz33.utils.logs.LogMediator;
 
-import java.awt.*;
 import java.util.List;
 import java.util.Random;
 
+import static ua.pz33.utils.configuration.PropertyRegistry.MAX_AMOUNT_OF_CLIENTS;
+import static ua.pz33.utils.configuration.PropertyRegistry.TICKS_PER_CLIENT;
+
 
 public class ClientGenerator implements ClockObserver {
-    private final Point position;
     private final Random random = new Random(System.currentTimeMillis());
     private boolean isPaused = false;
-    private final int maxAmountOfClients;
+    private int maxAmountOfClients;
     public int clientCount = 0;
     private int ticksPerClient;
     private static int ClientId = 1;
 
-    private StationController stationController = StationController.getInstance();
+    private final StationController stationController = StationController.getInstance();
 
     private static ClientGenerator instance;
 
@@ -37,9 +38,8 @@ public class ClientGenerator implements ClockObserver {
     }
 
     private ClientGenerator() {
-        position = config().getValueOrDefault(PropertyRegistry.ENTRANCE_POSITION, new Point(0, 0));
         maxAmountOfClients = config().getValueOrDefault(PropertyRegistry.MAX_AMOUNT_OF_CLIENTS, 20);
-        ticksPerClient = config().getValueOrDefault(PropertyRegistry.TICKS_PER_CLIENT, 20);
+        ticksPerClient = config().getValueOrDefault(TICKS_PER_CLIENT, 20);
 
         config().addListener(this::configUpdated);
     }
@@ -87,13 +87,19 @@ public class ClientGenerator implements ClockObserver {
         }
     }
 
+    public void updateMaxAmountOfClients(int newValue) {
+        maxAmountOfClients = newValue;
+    }
+
     public void updateSpawnRate(int newValue) {
         ticksPerClient = newValue;
     }
 
     private void configUpdated(PropertyChangedEventArgs args) {
-        if (args.getPropertyName().equals(PropertyRegistry.TICKS_PER_CLIENT)) {
+        if (args.getPropertyName().equals(TICKS_PER_CLIENT)) {
             updateSpawnRate((int) args.getNewValue());
+        } else if (args.getPropertyName().equals(MAX_AMOUNT_OF_CLIENTS)) {
+            updateMaxAmountOfClients((int) args.getNewValue());
         }
     }
 

@@ -53,9 +53,11 @@ public class ConfigPanel extends JPanel implements ConfigurationListener {
         save.addActionListener(e -> configs().setValue(TICKS_PER_SERVICE, Integer.parseInt(serviceTimeField.getText())));
 
         //Expected amount of people
-        JTextField expectedPeopleField = new JTextField("6");
-        expectedPeopleField.setAlignmentX(LEFT_ALIGNMENT);
-        expectedPeopleField.setMaximumSize(new Dimension(Integer.MAX_VALUE, ticksPerClientField.getPreferredSize().height));
+        JTextField maxPeopleField = new JTextField("20");
+        maxPeopleField.setAlignmentX(LEFT_ALIGNMENT);
+        maxPeopleField.setMaximumSize(new Dimension(Integer.MAX_VALUE, ticksPerClientField.getPreferredSize().height));
+        save.addActionListener(e -> configs().setValue(MAX_AMOUNT_OF_CLIENTS, Integer.parseInt(maxPeopleField.getText())));
+
         //% of people in special group
         JTextField percentSpecialField = new JTextField("5");
         percentSpecialField.setAlignmentX(LEFT_ALIGNMENT);
@@ -137,8 +139,8 @@ public class ConfigPanel extends JPanel implements ConfigurationListener {
 
         add(new JLabel("Time of service for single CR"));
         add(serviceTimeField);
-        add(new JLabel("Expected amount of people for single CR"));
-        add(expectedPeopleField);
+        add(new JLabel("Max amount of people in the station"));
+        add(maxPeopleField);
         add(new JLabel("Percent of special group peoples"));
         add(percentSpecialField);
         add(addItemsPanel);

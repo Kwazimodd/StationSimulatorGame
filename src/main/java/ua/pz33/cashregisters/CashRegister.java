@@ -5,6 +5,7 @@ import ua.pz33.clients.Client;
 import ua.pz33.utils.clock.ClockObserver;
 import ua.pz33.utils.clock.GameClock;
 import ua.pz33.utils.configuration.ConfigurationMediator;
+import ua.pz33.utils.configuration.PropertyChangedEventArgs;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;
@@ -24,6 +25,8 @@ public class CashRegister implements ClockObserver {
         currentState = CashRegisterState.Open;
         id = CashRegisterId++;
         ticksToServeClient = ConfigurationMediator.getInstance().getValueOrDefault(TICKS_PER_SERVICE, 10);
+
+        config().addListener(this::configUpdated);
     }
 
     public boolean tryAddToQueue(Client client){
@@ -123,5 +126,19 @@ public class CashRegister implements ClockObserver {
 
     private void notifyControllerAboutQueueUpdate() {
         StationController.getInstance().onQueueUpdated(this, clientsQueue);
+    }
+
+    private static ConfigurationMediator config() {
+        return ConfigurationMediator.getInstance();
+    }
+
+    public void updateServiceTime(int newValue) {
+        ticksToServeClient = newValue;
+    }
+
+    private void configUpdated(PropertyChangedEventArgs args) {
+        if (args.getPropertyName().equals(TICKS_PER_SERVICE)) {
+            updateServiceTime((int) args.getNewValue());
+        }
     }
 }
