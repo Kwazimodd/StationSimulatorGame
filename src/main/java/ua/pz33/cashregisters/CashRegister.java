@@ -25,7 +25,7 @@ public class CashRegister implements ClockObserver {
     public CashRegister() {
         currentState = CashRegisterState.Open;
         id = CashRegisterId++;
-        ticksToServeClient = ConfigurationMediator.getInstance().getValueOrDefault(TICKS_PER_SERVICE, 10);
+        ticksToServeClient = ConfigurationMediator.getInstance().getValueOrDefault(TICKS_PER_SERVICE, 40);
 
         config().addListener(this::configUpdated);
     }

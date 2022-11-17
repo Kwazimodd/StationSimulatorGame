@@ -39,7 +39,7 @@ public class ClientGenerator implements ClockObserver {
 
     private ClientGenerator() {
         maxAmountOfClients = config().getValueOrDefault(PropertyRegistry.MAX_AMOUNT_OF_CLIENTS, 20);
-        ticksPerClient = config().getValueOrDefault(TICKS_PER_CLIENT, 20);
+        ticksPerClient = config().getValueOrDefault(TICKS_PER_CLIENT, 10);
 
         config().addListener(this::configUpdated);
     }

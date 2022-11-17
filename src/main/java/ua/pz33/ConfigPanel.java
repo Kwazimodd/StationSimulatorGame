@@ -37,7 +37,7 @@ public class ConfigPanel extends JPanel implements ConfigurationListener {
         JLabel dasLabel = new JLabel("Tick per client spawn");
         dasLabel.setAlignmentX(LEFT_ALIGNMENT);
 
-        JTextField ticksPerClientField = new JTextField("20");
+        JTextField ticksPerClientField = new JTextField("10");
         ticksPerClientField.setAlignmentX(LEFT_ALIGNMENT);
         ticksPerClientField.setMaximumSize(new Dimension(Integer.MAX_VALUE, ticksPerClientField.getPreferredSize().height));
 
@@ -47,7 +47,7 @@ public class ConfigPanel extends JPanel implements ConfigurationListener {
 
         //Another configuration fields
         //Time of service
-        JTextField serviceTimeField = new JTextField("10");
+        JTextField serviceTimeField = new JTextField("40");
         serviceTimeField.setAlignmentX(LEFT_ALIGNMENT);
         serviceTimeField.setMaximumSize(new Dimension(Integer.MAX_VALUE, ticksPerClientField.getPreferredSize().height));
         save.addActionListener(e -> configs().setValue(TICKS_PER_SERVICE, Integer.parseInt(serviceTimeField.getText())));
