@@ -28,6 +28,8 @@ public class LogsPanel extends JPanel implements LogDestination {
         textArea.setEditable(false);
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
+        DefaultCaret caret = (DefaultCaret)textArea.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
         JScrollPane logsScroller = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         logsScroller.setBorder(BorderFactory.createEmptyBorder(0, 12, 32, 12));
