@@ -17,7 +17,7 @@ import static ua.pz33.utils.configuration.PropertyRegistry.IS_PAUSED;
 public class GameClock implements ConfigurationListener {
     private static final int TICKS_PER_SECOND = 10;
 
-    private final List<WeakReference<ClockObserver>> observers = new ArrayList<>();
+    private final List<WeakReference<ClockObserver>> observers = new CopyOnWriteArrayList<>();
     private final List<PostExecuteObserver> delayedRunners = new ArrayList<>();
     private final Thread clockThread;
 
@@ -37,7 +37,7 @@ public class GameClock implements ConfigurationListener {
 
         while (true) {
             if (!isPaused) {
-                this.onTick();
+                EventQueue.invokeLater(this::onTick);
             }
 
             var delta = System.currentTimeMillis() - currMillis;
