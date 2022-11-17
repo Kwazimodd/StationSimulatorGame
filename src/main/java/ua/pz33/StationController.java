@@ -69,7 +69,7 @@ public class StationController {
         clients.put(client.getId(), client);
 
         ClientSprite clientSprite = new ClientSprite(client);
-        clientSprite.setBounds(new Rectangle((int) entrance.getX(), (int) entrance.getY(), 80, 80));
+        clientSprite.setBounds(new Rectangle((int) entrance.getX(), (int) entrance.getY(), 50, 50));
 
         SpriteRegistry.getInstance().registerSprite(clientSprite);
         clientSprites.put(clientSprite.getId(), clientSprite);
@@ -138,7 +138,7 @@ public class StationController {
         GameClock.getInstance().addObserver(cashRegister);
 
         CashRegisterSprite cashRegisterSprite = new CashRegisterSprite(cashRegister.getId(), "CashRegisterReserved200X200.png");
-        cashRegisterSprite.setBounds(new Rectangle(x, y, 100, 100));
+        cashRegisterSprite.setBounds(new Rectangle(x, y, 50, 50));
         SpriteRegistry.getInstance().registerSprite(cashRegisterSprite);
         backupCashRegisterSprites.put(cashRegister.getId(), cashRegisterSprite);
     }
@@ -209,7 +209,7 @@ public class StationController {
         int stepX = SPRITE_SIZE + SPRITE_SPACING_X;
         int stepY = SPRITE_SIZE + SPRITE_SPACING_Y;
 
-        int clientX = register.getX() - SPRITE_SPACING_X, clientY = register.getY();
+        int clientX = register.getX() - SPRITE_SPACING_X * dirX * dirX, clientY = register.getY();
 
         for (var client : clients) {
             clientX += dirX * stepX;
