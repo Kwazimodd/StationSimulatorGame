@@ -29,8 +29,8 @@ public class Client implements ClockObserver {
         this.currentState = new IdleState(this);
     }
 
-    public void buyTickets() {
-        var message = String.format("Client %d bought %d tickets", id, countOfTickets);
+    public void buyTickets(CashRegister cashRegister) {
+        var message = String.format("Client %d bought %d tickets in cashregister %d", id, countOfTickets, cashRegister.getId());
         countOfTickets = 0;
         LogMediator.getInstance().logMessage(message);
     }
@@ -38,6 +38,10 @@ public class Client implements ClockObserver {
     public boolean tryChooseCashRegister(Collection<CashRegister> cashRegisters) {
         //check if all cash registers have same number of people in queue
         var sortedCashRegisters = cashRegisters.stream().filter(c -> c.isOpen()).sorted(countInQueueComparator).toList();
+
+        if(sortedCashRegisters.isEmpty()){
+            return false;
+        }
 
         var bestCashRegister = sortedCashRegisters.get(0);
         var count = bestCashRegister.getClientsQueue().size();
