@@ -7,6 +7,7 @@ import ua.pz33.utils.configuration.PropertyChangedEventArgs;
 import java.awt.*;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static ua.pz33.utils.configuration.PropertyRegistry.IS_PAUSED;

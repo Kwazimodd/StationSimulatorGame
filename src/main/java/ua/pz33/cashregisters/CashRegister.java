@@ -10,34 +10,31 @@ import java.util.PriorityQueue;
 
 public class CashRegister implements ClockObserver {
     private static int CashRegisterId = 1;
-    private PriorityQueue<Client> clientsQueue = new PriorityQueue<>(statusComparator);
+    private final PriorityQueue<Client> clientsQueue = new PriorityQueue<>(statusComparator);
     private int ticksToServeClient = 50;
     private boolean isBackup = false;
-    private int id;
+    private final int id;
 
     private CashRegisterState currentState;
 
-    public CashRegister(){
+    public CashRegister() {
         currentState = CashRegisterState.Open;
         id = CashRegisterId++;
     }
 
-    public CashRegister(PriorityQueue<Client> oldQueue){
-        clientsQueue = oldQueue;
-    }
-
-    public boolean tryAddToQueue(Client client){
-        if (currentState.equals(CashRegisterState.Closed)){
+    public boolean tryAddToQueue(Client client) {
+        if (currentState.equals(CashRegisterState.Closed)) {
             return false;
         }
 
-        clientsQueue.add(client);
+        addToQueueInternal(client);
+
         return true;
     }
 
-    public void service(){
+    public void service() {
         // todo add time for client service from configuration
-        if(currentState.equals(CashRegisterState.Servicing)){
+        if (currentState.equals(CashRegisterState.Servicing)){
             return;
         }
 
@@ -48,36 +45,44 @@ public class CashRegister implements ClockObserver {
         currentState = CashRegisterState.Servicing;
         GameClock.getInstance().postExecute(ticksToServeClient, () -> {
             var currentClient = clientsQueue.poll();
+
+            if (currentClient == null) {
+                throw new IllegalArgumentException("The queue can't be empty");
+            }
+
             currentClient.buyTickets();
             currentState = CashRegisterState.Open;
+            notifyControllerAboutQueueUpdate();
 
-            if (isBackup && clientsQueue.isEmpty()){
+            if (isBackup && clientsQueue.isEmpty()) {
                 close();
             }
         });
 
     }
 
-    public PriorityQueue<Client> getClientsQueue(){
+    public PriorityQueue<Client> getClientsQueue() {
         return clientsQueue;
     }
 
     public static Comparator<Client> statusComparator = (c1, c2) -> {
-        var statusCompareResult = (int) (c1.getStatus().compareTo(c2.getStatus()));
-        if(statusCompareResult == 0){
-            return (int) (c1.getId().compareTo(c2.getId()));
+        var statusCompareResult = c1.getStatus().compareTo(c2.getStatus());
+        if (statusCompareResult == 0) {
+            return c1.getId().compareTo(c2.getId());
         }
 
         return statusCompareResult;
     };
 
-    public void open(){
+    public void open() {
         currentState = CashRegisterState.Open;
     }
 
-    public void close(){
+    public void close() {
         currentState = CashRegisterState.Closed;
-        StationController.getInstance().moveQueue(clientsQueue);
+
+        // TODO: please check
+        //StationController.getInstance().moveQueue(clientsQueue);
     }
 
     public boolean isOpen() {
@@ -92,17 +97,27 @@ public class CashRegister implements ClockObserver {
         this.ticksToServeClient = ticksToServeClient;
     }
 
-    public void makeBackup(){
+    public void makeBackup() {
         isBackup = true;
         close();
     }
 
-    public int getId(){
+    public int getId() {
         return id;
     }
 
     @Override
     public void onTick() {
         service();
+    }
+
+    private void addToQueueInternal(Client client) {
+        clientsQueue.add(client);
+
+        notifyControllerAboutQueueUpdate();
+    }
+
+    private void notifyControllerAboutQueueUpdate() {
+        StationController.getInstance().onQueueUpdated(this, clientsQueue);
     }
 }

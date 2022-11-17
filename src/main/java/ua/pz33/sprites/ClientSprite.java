@@ -16,9 +16,9 @@ public class ClientSprite extends ImageSprite {
     private int id;
     private static final Map<ClientStatus, String> clientStatusImageMap = Map.of(
             ClientStatus.REGULAR,"Body200X200.png",
-            ClientStatus.VIP,"BodyExempt200X200.png",
-            ClientStatus.HAS_KIDS,"BodyVIP200X200.png",
-            ClientStatus.INVALID,"BodyWithChild200X200.png");
+            ClientStatus.INVALID,"BodyExempt200X200.png",
+            ClientStatus.VIP,"BodyVIP200X200.png",
+            ClientStatus.HAS_KIDS,"BodyWithChild200X200.png");
 
     public ClientSprite(String image) {
         super(image);

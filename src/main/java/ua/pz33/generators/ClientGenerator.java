@@ -57,22 +57,22 @@ public class ClientGenerator implements ClockObserver {
             if (a < 5) {
                 //50%
                 //spawn normal client in pos (x-100,y-100)
-                stationController.addClient(new Client(ClientId++, ticketsCount, ClientStatus.REGULAR), randomEntrance);
+                stationController.addClient(new Client(ClientId++, ticketsCount, ClientStatus.REGULAR), randomEntrance.getBounds().getLocation());
                 LogMediator.getInstance().logMessage("Spawned a normal client");
             } else if (a < 7) {
                 //20%
                 //spawn invalid client in pos (x-100,y-100)
-                stationController.addClient(new Client(ClientId++, ticketsCount, ClientStatus.INVALID), randomEntrance);
+                stationController.addClient(new Client(ClientId++, ticketsCount, ClientStatus.INVALID), randomEntrance.getBounds().getLocation());
                 LogMediator.getInstance().logMessage("Spawned a client with special needs");
             } else if (a < 9) {
                 //20%
                 //spawn client with children in pos (x-100,y-100)
-                stationController.addClient(new Client(ClientId++, ticketsCount, ClientStatus.HAS_KIDS), randomEntrance);
+                stationController.addClient(new Client(ClientId++, ticketsCount, ClientStatus.HAS_KIDS), randomEntrance.getBounds().getLocation());
                 LogMediator.getInstance().logMessage("Spawned a client with children");
             } else {
                 //10%
                 //spawn VIP client in pos (x-100,y-100)
-                stationController.addClient(new Client(ClientId++, ticketsCount, ClientStatus.VIP), randomEntrance);
+                stationController.addClient(new Client(ClientId++, ticketsCount, ClientStatus.VIP), randomEntrance.getBounds().getLocation());
                 LogMediator.getInstance().logMessage("Spawned a VIP client");
             }
             clientCount++;
