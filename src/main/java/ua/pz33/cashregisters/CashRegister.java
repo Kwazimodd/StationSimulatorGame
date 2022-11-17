@@ -4,14 +4,17 @@ import ua.pz33.StationController;
 import ua.pz33.clients.Client;
 import ua.pz33.utils.clock.ClockObserver;
 import ua.pz33.utils.clock.GameClock;
+import ua.pz33.utils.configuration.ConfigurationMediator;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
+import static ua.pz33.utils.configuration.PropertyRegistry.TICKS_PER_SERVICE;
+
 public class CashRegister implements ClockObserver {
     private static int CashRegisterId = 1;
     private PriorityQueue<Client> clientsQueue = new PriorityQueue<>(statusComparator);
-    private int ticksToServeClient = 50;
+    private int ticksToServeClient;
     private boolean isBackup = false;
     private int id;
 
@@ -20,10 +23,7 @@ public class CashRegister implements ClockObserver {
     public CashRegister(){
         currentState = CashRegisterState.Open;
         id = CashRegisterId++;
-    }
-
-    public CashRegister(PriorityQueue<Client> oldQueue){
-        clientsQueue = oldQueue;
+        ticksToServeClient = ConfigurationMediator.getInstance().getValueOrDefault(TICKS_PER_SERVICE, 10);
     }
 
     public boolean tryAddToQueue(Client client){
