@@ -167,8 +167,16 @@ public class StationController {
         return backupCashRegisters.values();
     }
 
+    public Collection<CashRegisterSprite> getBackupCashRegisterSprites() {
+        return backupCashRegisterSprites.values();
+    }
+
     public CashRegister getCashRegister(int id) {
         return cashRegisters.get(id);
+    }
+
+    public CashRegister getBackupCashRegister(int id) {
+        return backupCashRegisters.get(id);
     }
 
     public CashRegisterSprite getCashRegisterSprite(int id) {
@@ -188,7 +196,7 @@ public class StationController {
             clients.add(getClientSprite(c));
         }
 
-        var crSprite = getCashRegisterSprite(register);
+        var crSprite = register.isBackup() ? getBackupCashRegisterSprite(register) : getCashRegisterSprite(register);
 
         layoutCashRegister(crSprite, clients);
     }
@@ -199,6 +207,10 @@ public class StationController {
 
     private CashRegisterSprite getCashRegisterSprite(CashRegister register) {
         return getCashRegisterSprite(register.getId());
+    }
+
+    private CashRegisterSprite getBackupCashRegisterSprite(CashRegister register) {
+        return getBackupCashRegisterSprite(register.getId());
     }
 
     private void layoutCashRegister(CashRegisterSprite register, List<ClientSprite> clients) {

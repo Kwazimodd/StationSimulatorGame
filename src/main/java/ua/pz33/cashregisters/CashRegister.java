@@ -2,15 +2,19 @@ package ua.pz33.cashregisters;
 
 import ua.pz33.StationController;
 import ua.pz33.clients.Client;
+import ua.pz33.clients.statemachice.MovingState;
 import ua.pz33.clients.statemachice.ServicedState;
 import ua.pz33.utils.ResourceLoader;
 import ua.pz33.utils.clock.ClockObserver;
 import ua.pz33.utils.clock.GameClock;
 import ua.pz33.utils.configuration.ConfigurationMediator;
 import ua.pz33.utils.configuration.PropertyChangedEventArgs;
+import ua.pz33.utils.logs.LogMediator;
 
+import java.awt.*;
 import java.util.Comparator;
 import java.util.PriorityQueue;
+import java.util.Random;
 
 import static ua.pz33.utils.configuration.PropertyRegistry.TICKS_PER_SERVICE;
 
@@ -20,6 +24,11 @@ public class CashRegister implements ClockObserver {
     private int ticksToServeClient;
     private boolean isBackup = false;
     private final int id;
+
+    private boolean triedClose = false;
+
+    private final Random random = new Random(System.currentTimeMillis());
+
 
     private CashRegisterState currentState;
 
@@ -31,8 +40,8 @@ public class CashRegister implements ClockObserver {
         config().addListener(this::configUpdated);
     }
 
-    public boolean tryAddToQueue(Client client){
-        if (currentState.equals(CashRegisterState.Closed)){
+    public boolean tryAddToQueue(Client client) {
+        if (currentState.equals(CashRegisterState.Closed)) {
             return false;
         }
 
@@ -43,11 +52,16 @@ public class CashRegister implements ClockObserver {
 
     public void service() {
         // todo add time for client service from configuration
-        if (currentState.equals(CashRegisterState.Servicing)){
+        if (currentState.equals(CashRegisterState.Servicing) || currentState.equals(CashRegisterState.Closed)) {
             return;
         }
 
-        if(clientsQueue.isEmpty()){
+        boolean existOpenedCashRegisters = StationController.getInstance().getCashRegisters().stream().anyMatch(c->c.isOpen());
+
+        if (clientsQueue.isEmpty()) {
+            if(isBackup && existOpenedCashRegisters){
+                close();
+            }
             return;
         }
 
@@ -59,13 +73,9 @@ public class CashRegister implements ClockObserver {
                 throw new IllegalArgumentException("The queue can't be empty");
             }
 
-            currentClient.buyTickets();
+            currentClient.buyTickets(this);
             currentState = CashRegisterState.Open;
             notifyControllerAboutQueueUpdate();
-
-            if (isBackup && clientsQueue.isEmpty()) {
-                close();
-            }
         });
 
     }
@@ -76,7 +86,7 @@ public class CashRegister implements ClockObserver {
 
     public static Comparator<Client> statusComparator = (c1, c2) -> {
         var statusCompareResultState = c1.getCurrentState() instanceof ServicedState;
-        if(statusCompareResultState)
+        if (statusCompareResultState)
             return 1;
 
         var statusCompareResult = c1.getStatus().compareTo(c2.getStatus());
@@ -105,7 +115,9 @@ public class CashRegister implements ClockObserver {
         }
 
         // TODO: please check
-        //StationController.getInstance().moveQueue(clientsQueue);
+        if(!isBackup){
+            StationController.getInstance().moveQueue(clientsQueue);
+        }
     }
 
     public boolean isOpen() {
@@ -129,13 +141,37 @@ public class CashRegister implements ClockObserver {
         return id;
     }
 
+    public boolean isBackup(){
+        return isBackup;
+    }
     @Override
     public void onTick() {
+        //random close
+        if(!triedClose && isOpen() && !isBackup){
+            var res = random.nextInt(10);
+
+            if (res < 1) {
+                LogMediator.getInstance().logMessage("Cashregiser " + id + " was broken.");
+                close();
+                GameClock.getInstance().postExecute(50, () -> open());
+            }else {
+                triedClose = true;
+                GameClock.getInstance().postExecute(100, () -> triedClose = false);
+            }
+        }
+
+
         service();
     }
 
     private void addToQueueInternal(Client client) {
         clientsQueue.add(client);
+        var cashRegisterSprite = isBackup
+                ? StationController.getInstance().getBackupCashRegisterSprite(this.getId())
+                : StationController.getInstance().getCashRegisterSprite(this.getId());
+        client.setGoalPoint(new Point(cashRegisterSprite.getX(), cashRegisterSprite.getY()));
+        client.setCashRegister(this);
+        client.changeState(new MovingState(client));
 
         notifyControllerAboutQueueUpdate();
     }
