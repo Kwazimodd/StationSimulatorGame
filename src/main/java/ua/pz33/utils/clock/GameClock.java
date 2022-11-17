@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 import static ua.pz33.utils.configuration.PropertyRegistry.IS_PAUSED;
 
@@ -17,7 +18,7 @@ public class GameClock implements ConfigurationListener {
     private static final int TICKS_PER_SECOND = 10;
 
     private final List<WeakReference<ClockObserver>> observers = new CopyOnWriteArrayList<>();
-    private final List<ClockObserver> delayedRunners = new ArrayList<>();
+    private final List<PostExecuteObserver> delayedRunners = new ArrayList<>();
     private final Thread clockThread;
 
     private static GameClock instance;
@@ -53,7 +54,7 @@ public class GameClock implements ConfigurationListener {
     }
 
     public void postExecute(int ticks, Runnable function) {
-        var postExecuteObserver = new PostExecuteObserver(ticks, function);
+        var postExecuteObserver = new PostExecuteObserverImpl(ticks, function);
         this.delayedRunners.add(postExecuteObserver);
     }
 
@@ -101,6 +102,11 @@ public class GameClock implements ConfigurationListener {
             } catch (Exception ignored) {
             }
         }
+
+        delayedRunners.stream()
+                .filter(PostExecuteObserver::canBeDeleted)
+                .collect(Collectors.toList())
+                .forEach(delayedRunners::remove);
     }
 
     private static ConfigurationMediator config() {
@@ -114,13 +120,14 @@ public class GameClock implements ConfigurationListener {
         }
     }
 
-    class PostExecuteObserver implements ClockObserver {
+    private static class PostExecuteObserverImpl implements PostExecuteObserver {
         private final int tickToRun;
         private final Runnable function;
 
         private int currentTick = 0;
+        private boolean canBeDeleted = false;
 
-        public PostExecuteObserver(int ticks, Runnable function) {
+        public PostExecuteObserverImpl(int ticks, Runnable function) {
             this.tickToRun = ticks;
             this.function = function;
         }
@@ -131,8 +138,14 @@ public class GameClock implements ConfigurationListener {
 
             if (currentTick == tickToRun) {
                 function.run();
-                delayedRunners.remove(this);
+
+                canBeDeleted = true;
             }
+        }
+
+        @Override
+        public boolean canBeDeleted() {
+            return canBeDeleted;
         }
     }
 }
