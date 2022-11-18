@@ -1,5 +1,6 @@
 package ua.pz33;
 
+import ua.pz33.controllers.StationController;
 import ua.pz33.rendering.GameCanvas;
 import ua.pz33.sprites.Entrance;
 import ua.pz33.utils.configuration.ConfigurationListener;

@@ -1,5 +1,6 @@
-package ua.pz33;
+package ua.pz33.controllers;
 
+import org.jetbrains.annotations.NotNull;
 import ua.pz33.cashregisters.CashRegister;
 import ua.pz33.clients.Client;
 import ua.pz33.generators.ClientGenerator;
@@ -17,7 +18,7 @@ import java.awt.*;
 import java.util.List;
 import java.util.*;
 
-public class StationController {
+public class StationController implements CustomerController, CashRegisterController {
     private static final int SPRITE_SIZE = 50;
     private static final int SPRITE_SPACING_X = -15;
     private static final int SPRITE_SPACING_Y = 0;
@@ -48,7 +49,9 @@ public class StationController {
         animController = AnimationController.getInstance();
     }
 
-    public void moveQueue(PriorityQueue<Client> clientsQueue) {
+    public void notifyCashRegisterClosed(CashRegister register) {
+        var clientsQueue = register.getClientsQueue();
+
         // Find backup cash register with minimum queue size.
         Optional<CashRegister> bestBackupCashRegister = backupCashRegisters.values().stream().min(
                 Comparator.comparingInt(cashRegister -> cashRegister.getClientsQueue().size()));
@@ -166,6 +169,21 @@ public class StationController {
         return backupCashRegisters.get(id);
     }
 
+    @Override
+    public boolean hasAnyOpenControllers() {
+        return cashRegisters.values().stream().anyMatch(CashRegister::isOpen);
+    }
+
+    @Override
+    public void notifyClientBeganService(Client currentClient) {
+        currentClient.onStartedService();
+    }
+
+    @Override
+    public void notifyClientServiced(Client currentClient) {
+        currentClient.onFinishedService();
+    }
+
     public CashRegisterSprite getCashRegisterSprite(int id) {
         return cashRegisterSprites.get(id);
     }
@@ -174,7 +192,16 @@ public class StationController {
         return backupCashRegisterSprites.get(id);
     }
 
-    public void onQueueUpdated(CashRegister register, PriorityQueue<Client> clientsQueue) {
+    public void notifyQueueUpdated(CashRegister register) {
+        ArrayList<ClientSprite> clients = getQueueCopy(register.getClientsQueue());
+
+        var crSprite = register.isBackup() ? getBackupCashRegisterSprite(register) : getCashRegisterSprite(register);
+
+        layoutCashRegister(crSprite, clients);
+    }
+
+    @NotNull
+    private ArrayList<ClientSprite> getQueueCopy(PriorityQueue<Client> clientsQueue) {
         var duplicate = new PriorityQueue<Client>(clientsQueue.comparator());
         duplicate.addAll(clientsQueue);
 
@@ -182,10 +209,7 @@ public class StationController {
         for (Client c = duplicate.poll(); c != null; c = duplicate.poll()) {
             clients.add(getClientSprite(c));
         }
-
-        var crSprite = register.isBackup() ? getBackupCashRegisterSprite(register) : getCashRegisterSprite(register);
-
-        layoutCashRegister(crSprite, clients);
+        return clients;
     }
 
     private ClientSprite getClientSprite(Client client) {
@@ -237,5 +261,20 @@ public class StationController {
                             .build())
                     .build());
         }
+    }
+
+    @Override
+    public void onClientServiced(Client client) {
+        var exit = getExit();
+
+        var sprite = getClientSprite(client);
+
+        animController.beginAnimation(sprite, new Storyboard.Builder()
+                .withDuration(1_000)
+                .withAnimations(new PositionAnimation.Builder()
+                        .withBounds(sprite.getBounds().getLocation(), exit.getBounds().getLocation())
+                        .withProperty((s, p) -> s.getBounds().setLocation(p))
+                        .build())
+                .build());
     }
 }

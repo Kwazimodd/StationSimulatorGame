@@ -4,11 +4,12 @@ import ua.pz33.sprites.Sprite;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class SpriteRegistry {
     private static SpriteRegistry instance;
 
-    private final List<Sprite> sprites = new ArrayList<>();
+    private final List<Sprite> sprites = new CopyOnWriteArrayList<>();
 
     private SpriteRegistry() {
 

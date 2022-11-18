@@ -1,6 +1,6 @@
 package ua.pz33.clients.statemachice;
 
-import ua.pz33.StationController;
+import ua.pz33.controllers.StationController;
 import ua.pz33.clients.Client;
 
 public class ExitState extends State{

@@ -1,6 +1,6 @@
 package ua.pz33.generators;
 
-import ua.pz33.StationController;
+import ua.pz33.controllers.StationController;
 import ua.pz33.clients.Client;
 import ua.pz33.clients.ClientStatus;
 import ua.pz33.sprites.Entrance;
@@ -8,7 +8,6 @@ import ua.pz33.utils.clock.ClockObserver;
 import ua.pz33.utils.configuration.ConfigurationListener;
 import ua.pz33.utils.configuration.ConfigurationMediator;
 import ua.pz33.utils.configuration.PropertyChangedEventArgs;
-import ua.pz33.utils.configuration.PropertyRegistry;
 import ua.pz33.utils.logs.LogMediator;
 
 import java.util.List;

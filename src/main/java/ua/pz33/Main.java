@@ -1,13 +1,9 @@
 package ua.pz33;
 
+import ua.pz33.controllers.StationController;
 import ua.pz33.generators.ClientGenerator;
 import ua.pz33.rendering.RenderTimer;
 import ua.pz33.rendering.SpriteRegistry;
-import ua.pz33.rendering.animation.AnimationController;
-import ua.pz33.rendering.animation.IntAnimation;
-import ua.pz33.rendering.animation.PositionAnimation;
-import ua.pz33.rendering.animation.Storyboard;
-import ua.pz33.rendering.animation.interpolation.Interpolators;
 import ua.pz33.sprites.*;
 import ua.pz33.utils.clock.GameClock;
 import ua.pz33.utils.configuration.ConfigurationMediator;
