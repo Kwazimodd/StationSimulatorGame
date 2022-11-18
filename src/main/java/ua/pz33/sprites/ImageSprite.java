@@ -11,7 +11,7 @@ import java.awt.*;
 
 public class ImageSprite extends Sprite {
     private final int zIndex;
-    protected final Image spriteImage;
+    protected Image spriteImage;
 
     public ImageSprite(String image) {
         this(image, 0);
@@ -34,5 +34,10 @@ public class ImageSprite extends Sprite {
         g.drawImage(spriteImage, getX(), getY(), getWidth(), getHeight(), null);
 
         g.dispose();
+    }
+
+    public void setSprite(Image image)
+    {
+        spriteImage = image;
     }
 }

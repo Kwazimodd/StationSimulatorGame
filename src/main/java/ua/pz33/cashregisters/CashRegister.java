@@ -4,6 +4,7 @@ import ua.pz33.StationController;
 import ua.pz33.clients.Client;
 import ua.pz33.clients.statemachice.MovingState;
 import ua.pz33.clients.statemachice.ServicedState;
+import ua.pz33.utils.ResourceLoader;
 import ua.pz33.utils.clock.ClockObserver;
 import ua.pz33.utils.clock.GameClock;
 import ua.pz33.utils.configuration.ConfigurationMediator;
@@ -98,10 +99,16 @@ public class CashRegister implements ClockObserver {
 
     public void open() {
         currentState = CashRegisterState.Open;
+        if (!isBackup) {
+            StationController.getInstance().getCashRegisterSprite(id).setSprite(ResourceLoader.getInstance().loadImage("CashRegister200X200.png"));
+        }
     }
 
     public void close() {
         currentState = CashRegisterState.Closed;
+        if (!isBackup) {
+            StationController.getInstance().getCashRegisterSprite(id).setSprite(ResourceLoader.getInstance().loadImage("CashRegisterBroken200X200.png"));
+        }
 
         // TODO: please check
         if(!isBackup){
