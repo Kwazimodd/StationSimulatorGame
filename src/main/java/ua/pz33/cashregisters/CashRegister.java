@@ -169,10 +169,6 @@ public class CashRegister implements ClockObserver, ConfigurationListener {
 
     private void addToQueueInternal(Client client) {
         clientsQueue.add(client);
-        var cashRegisterSprite = isBackup
-                ? StationController.getInstance().getBackupCashRegisterSprite(this.getId())
-                : StationController.getInstance().getCashRegisterSprite(this.getId());
-        client.setGoalPoint(new Point(cashRegisterSprite.getX(), cashRegisterSprite.getY()));
         client.setCashRegister(this);
         client.changeState(new MovingState(client));
 
