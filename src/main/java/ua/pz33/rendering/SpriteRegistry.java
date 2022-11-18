@@ -1,8 +1,9 @@
-package ua.pz33.registries;
+package ua.pz33.rendering;
 
 import ua.pz33.sprites.Sprite;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SpriteRegistry {
     private static SpriteRegistry instance;
@@ -55,6 +56,10 @@ public class SpriteRegistry {
         }
 
         sprites.add(r, sprite);
+    }
+
+    public void removeSprite(Sprite sprite){
+        sprites.remove(sprite);
     }
 
     public Iterable<Sprite> getRegisteredSprites() {

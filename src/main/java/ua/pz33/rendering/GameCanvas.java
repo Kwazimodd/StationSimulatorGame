@@ -1,6 +1,4 @@
-package ua.pz33;
-
-import ua.pz33.registries.SpriteRegistry;
+package ua.pz33.rendering;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,7 +16,12 @@ public class GameCanvas extends JPanel {
 
     @Override
     public Dimension getPreferredSize() {
-        return new Dimension(200, 200);
+        return new Dimension(600, 600);
+    }
+
+    @Override
+    public Dimension getMinimumSize() {
+        return getPreferredSize();
     }
 
     @Override
