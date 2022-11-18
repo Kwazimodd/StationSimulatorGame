@@ -2,11 +2,9 @@ package ua.pz33;
 
 import ua.pz33.cashregisters.CashRegister;
 import ua.pz33.clients.Client;
-import ua.pz33.clients.ClientStatus;
 import ua.pz33.generators.ClientGenerator;
 import ua.pz33.rendering.SpriteRegistry;
 import ua.pz33.rendering.animation.AnimationController;
-import ua.pz33.rendering.animation.IntAnimation;
 import ua.pz33.rendering.animation.PositionAnimation;
 import ua.pz33.rendering.animation.Storyboard;
 import ua.pz33.sprites.CashRegisterSprite;
@@ -115,21 +113,6 @@ public class StationController {
         cashRegisterSprite.setBounds(new Rectangle(x, y, 50, 50));
         SpriteRegistry.getInstance().registerSprite(cashRegisterSprite);
         cashRegisterSprites.put(cashRegisterSprite.getId(), cashRegisterSprite);
-
-//        var client4 = new Client(4, 3, ClientStatus.INVALID);
-//        var client6 = new Client(6, 3, ClientStatus.REGULAR);
-//        var client2 = new Client(2, 3, ClientStatus.REGULAR);
-//        var client5 = new Client(5, 3, ClientStatus.HAS_KIDS);
-//
-//        addClient(client4, new Point(20, 20));
-//        addClient(client6, new Point(20, 20));
-//        addClient(client2, new Point(20, 20));
-//        addClient(client5, new Point(20, 20));
-//
-//        cashRegister.tryAddToQueue(client4);
-//        cashRegister.tryAddToQueue(client6);
-//        cashRegister.tryAddToQueue(client2);
-//        cashRegister.tryAddToQueue(client5);
     }
 
     public void addBackupCashRegister(int x, int y) {
@@ -228,7 +211,8 @@ public class StationController {
         int stepX = SPRITE_SIZE + SPRITE_SPACING_X;
         int stepY = SPRITE_SIZE + SPRITE_SPACING_Y;
 
-        int clientX = register.getX() - SPRITE_SPACING_X * dirX * dirX, clientY = register.getY();
+        int clientX = register.getX() - SPRITE_SPACING_X * dirX;
+        int clientY = register.getY() - SPRITE_SPACING_X * dirY;
 
         for (var client : clients) {
             clientX += dirX * stepX;

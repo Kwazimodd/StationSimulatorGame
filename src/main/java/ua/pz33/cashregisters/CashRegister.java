@@ -7,6 +7,7 @@ import ua.pz33.clients.statemachice.ServicedState;
 import ua.pz33.utils.ResourceLoader;
 import ua.pz33.utils.clock.ClockObserver;
 import ua.pz33.utils.clock.GameClock;
+import ua.pz33.utils.configuration.ConfigurationListener;
 import ua.pz33.utils.configuration.ConfigurationMediator;
 import ua.pz33.utils.configuration.PropertyChangedEventArgs;
 import ua.pz33.utils.logs.LogMediator;
@@ -18,7 +19,7 @@ import java.util.Random;
 
 import static ua.pz33.utils.configuration.PropertyRegistry.TICKS_PER_SERVICE;
 
-public class CashRegister implements ClockObserver {
+public class CashRegister implements ClockObserver, ConfigurationListener {
     private static int CashRegisterId = 1;
     private final PriorityQueue<Client> clientsQueue = new PriorityQueue<>(statusComparator);
     private int ticksToServeClient;
@@ -37,7 +38,7 @@ public class CashRegister implements ClockObserver {
         id = CashRegisterId++;
         ticksToServeClient = ConfigurationMediator.getInstance().getValueOrDefault(TICKS_PER_SERVICE, 40);
 
-        config().addListener(this::configUpdated);
+        config().addListener(this);
     }
 
     public boolean tryAddToQueue(Client client) {
@@ -56,7 +57,7 @@ public class CashRegister implements ClockObserver {
             return;
         }
 
-        boolean existOpenedCashRegisters = StationController.getInstance().getCashRegisters().stream().anyMatch(c->c.isOpen());
+        boolean existOpenedCashRegisters = StationController.getInstance().getCashRegisters().stream().anyMatch(CashRegister::isOpen);
 
         if (clientsQueue.isEmpty()) {
             if(isBackup && existOpenedCashRegisters){
@@ -149,7 +150,7 @@ public class CashRegister implements ClockObserver {
             if (res < 1) {
                 LogMediator.getInstance().logMessage("Cashregiser " + id + " was broken.");
                 close();
-                GameClock.getInstance().postExecute(50, () -> open());
+                GameClock.getInstance().postExecute(50, this::open);
             }else {
                 triedClose = true;
                 GameClock.getInstance().postExecute(100, () -> triedClose = false);
@@ -184,7 +185,8 @@ public class CashRegister implements ClockObserver {
         ticksToServeClient = newValue;
     }
 
-    private void configUpdated(PropertyChangedEventArgs args) {
+    @Override
+    public void onPropertyChanged(PropertyChangedEventArgs args) {
         if (args.getPropertyName().equals(TICKS_PER_SERVICE)) {
             updateServiceTime((int) args.getNewValue());
         }

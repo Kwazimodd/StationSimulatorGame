@@ -77,7 +77,7 @@ public class ConfigPanel extends JPanel implements ConfigurationListener {
         addCashRegisterButton.addActionListener(e -> canvas.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-                StationController.getInstance().addCashRegister(e.getX() - 50, e.getY() - 50);
+                StationController.getInstance().addCashRegister(e.getX() - 25, e.getY() - 25);
                 canvas.removeMouseListener(this);
             }
         }));
@@ -87,7 +87,7 @@ public class ConfigPanel extends JPanel implements ConfigurationListener {
         addReserveCashRegisterButton.addActionListener(e -> canvas.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-                StationController.getInstance().addBackupCashRegister(e.getX() - 50, e.getY() - 50);
+                StationController.getInstance().addBackupCashRegister(e.getX() - 25, e.getY() - 25);
                 canvas.removeMouseListener(this);
             }
         }));
