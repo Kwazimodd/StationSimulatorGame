@@ -31,7 +31,7 @@ public class Client implements ClockObserver {
     }
 
     public void buyTickets(CashRegister cashRegister) {
-        var message = String.format("Client %d bought %d tickets in cashregister %d", id, countOfTickets, cashRegister.getId());
+        var message = String.format("Client %d bought %d tickets in %d cashregister.", id, countOfTickets, cashRegister.getId());
         countOfTickets = 0;
         LogMediator.getInstance().logMessage(message);
     }

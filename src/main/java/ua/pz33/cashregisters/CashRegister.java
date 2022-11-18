@@ -68,7 +68,10 @@ public class CashRegister implements ClockObserver, ConfigurationListener {
         currentState = CashRegisterState.Servicing;
         var currentClient = clientsQueue.peek();
         currentClient.changeState(new IsServicedState(currentClient));
-        GameClock.getInstance().postExecute(ticksToServeClient, () -> {
+
+        var message = String.format("Cash register %d started servicing client %d.", id, currentClient.getId());
+        LogMediator.getInstance().logMessage(message);
+        GameClock.getInstance().postExecute(currentClient.getCountOfTickets() * ticksToServeClient, () -> {
             clientsQueue.remove(currentClient);
 
             if (currentClient == null) {

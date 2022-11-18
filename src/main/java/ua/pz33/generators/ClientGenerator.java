@@ -52,7 +52,7 @@ public class ClientGenerator implements ClockObserver, ConfigurationListener {
     public void spawnClient() {
         if (!isPaused) {
             int a = random.nextInt(10);
-            int ticketsCount = random.nextInt(9) + 1;
+            int ticketsCount = random.nextInt(5) + 1;
             List<Entrance> entrances = StationController.getInstance().getEntrances();
             Entrance randomEntrance = entrances.get(random.nextInt(entrances.size()));
             if (a < 5) {
