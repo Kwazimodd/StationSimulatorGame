@@ -55,7 +55,6 @@ public class Client implements ClockObserver {
                 ? StationController.getInstance().getBackupCashRegisterSprite(c.getId())
                 : StationController.getInstance().getCashRegisterSprite(c.getId())));
 
-        //todo choose the closest
         var closestCashRegisterSprite = openedCashRegisterSprites.stream().min(closestCashRegisterComparator).get();
         var bestCashRegister = isBackup
                 ? StationController.getInstance().getBackupCashRegister(closestCashRegisterSprite.getId())

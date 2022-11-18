@@ -2,11 +2,9 @@ package ua.pz33;
 
 import ua.pz33.cashregisters.CashRegister;
 import ua.pz33.clients.Client;
-import ua.pz33.clients.ClientStatus;
 import ua.pz33.generators.ClientGenerator;
 import ua.pz33.rendering.SpriteRegistry;
 import ua.pz33.rendering.animation.AnimationController;
-import ua.pz33.rendering.animation.IntAnimation;
 import ua.pz33.rendering.animation.PositionAnimation;
 import ua.pz33.rendering.animation.Storyboard;
 import ua.pz33.sprites.CashRegisterSprite;
@@ -16,8 +14,8 @@ import ua.pz33.sprites.Exit;
 import ua.pz33.utils.clock.GameClock;
 
 import java.awt.*;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 public class StationController {
     private static final int SPRITE_SIZE = 50;
@@ -78,6 +76,10 @@ public class StationController {
 
     public Collection<Client> getClients() {
         return clients.values();
+    }
+
+    public Client getClient(int id) {
+        return clients.get(id);
     }
 
     public Collection<ClientSprite> getClientSprites() {
