@@ -3,7 +3,7 @@ package ua.pz33.cashregisters;
 import ua.pz33.StationController;
 import ua.pz33.clients.Client;
 import ua.pz33.clients.statemachice.MovingState;
-import ua.pz33.clients.statemachice.ServicedState;
+import ua.pz33.clients.statemachice.IsServicedState;
 import ua.pz33.utils.ResourceLoader;
 import ua.pz33.utils.clock.ClockObserver;
 import ua.pz33.utils.clock.GameClock;
@@ -52,7 +52,6 @@ public class CashRegister implements ClockObserver, ConfigurationListener {
     }
 
     public void service() {
-        // todo add time for client service from configuration
         if (currentState.equals(CashRegisterState.Servicing) || currentState.equals(CashRegisterState.Closed)) {
             return;
         }
@@ -67,8 +66,13 @@ public class CashRegister implements ClockObserver, ConfigurationListener {
         }
 
         currentState = CashRegisterState.Servicing;
-        GameClock.getInstance().postExecute(ticksToServeClient, () -> {
-            var currentClient = clientsQueue.poll();
+        var currentClient = clientsQueue.peek();
+        currentClient.changeState(new IsServicedState(currentClient));
+
+        var message = String.format("Cash register %d started servicing client %d.", id, currentClient.getId());
+        LogMediator.getInstance().logMessage(message);
+        GameClock.getInstance().postExecute(currentClient.getCountOfTickets() * ticksToServeClient, () -> {
+            clientsQueue.remove(currentClient);
 
             if (currentClient == null) {
                 throw new IllegalArgumentException("The queue can't be empty");
@@ -78,7 +82,6 @@ public class CashRegister implements ClockObserver, ConfigurationListener {
             currentState = CashRegisterState.Open;
             notifyControllerAboutQueueUpdate();
         });
-
     }
 
     public PriorityQueue<Client> getClientsQueue() {
@@ -86,8 +89,12 @@ public class CashRegister implements ClockObserver, ConfigurationListener {
     }
 
     public static Comparator<Client> statusComparator = (c1, c2) -> {
-        var statusCompareResultState = c1.getCurrentState() instanceof ServicedState;
-        if (statusCompareResultState)
+        var c1StatusCompareResultState = c1.getCurrentState() instanceof IsServicedState;
+        if (c1StatusCompareResultState)
+            return -1;
+
+        var c2StatusCompareResultState = c2.getCurrentState() instanceof IsServicedState;
+        if (c2StatusCompareResultState)
             return 1;
 
         var statusCompareResult = c1.getStatus().compareTo(c2.getStatus());
@@ -111,7 +118,6 @@ public class CashRegister implements ClockObserver, ConfigurationListener {
             StationController.getInstance().getCashRegisterSprite(id).setSprite(ResourceLoader.getInstance().loadImage("CashRegisterBroken200X200.png"));
         }
 
-        // TODO: please check
         if(!isBackup){
             StationController.getInstance().moveQueue(clientsQueue);
         }

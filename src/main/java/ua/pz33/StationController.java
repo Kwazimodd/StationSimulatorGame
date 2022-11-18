@@ -14,8 +14,8 @@ import ua.pz33.sprites.Exit;
 import ua.pz33.utils.clock.GameClock;
 
 import java.awt.*;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 public class StationController {
     private static final int SPRITE_SIZE = 50;
@@ -76,6 +76,10 @@ public class StationController {
 
     public Collection<Client> getClients() {
         return clients.values();
+    }
+
+    public Client getClient(int id) {
+        return clients.get(id);
     }
 
     public Collection<ClientSprite> getClientSprites() {
