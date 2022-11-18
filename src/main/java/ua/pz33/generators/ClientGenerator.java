@@ -5,6 +5,7 @@ import ua.pz33.clients.Client;
 import ua.pz33.clients.ClientStatus;
 import ua.pz33.sprites.Entrance;
 import ua.pz33.utils.clock.ClockObserver;
+import ua.pz33.utils.configuration.ConfigurationListener;
 import ua.pz33.utils.configuration.ConfigurationMediator;
 import ua.pz33.utils.configuration.PropertyChangedEventArgs;
 import ua.pz33.utils.configuration.PropertyRegistry;
@@ -17,7 +18,7 @@ import static ua.pz33.utils.configuration.PropertyRegistry.MAX_AMOUNT_OF_CLIENTS
 import static ua.pz33.utils.configuration.PropertyRegistry.TICKS_PER_CLIENT;
 
 
-public class ClientGenerator implements ClockObserver {
+public class ClientGenerator implements ClockObserver, ConfigurationListener {
     private final Random random = new Random(System.currentTimeMillis());
     private boolean isPaused = false;
     private int maxAmountOfClients;
@@ -38,10 +39,10 @@ public class ClientGenerator implements ClockObserver {
     }
 
     private ClientGenerator() {
-        maxAmountOfClients = config().getValueOrDefault(PropertyRegistry.MAX_AMOUNT_OF_CLIENTS, 20);
+        maxAmountOfClients = config().getValueOrDefault(MAX_AMOUNT_OF_CLIENTS, 20);
         ticksPerClient = config().getValueOrDefault(TICKS_PER_CLIENT, 10);
 
-        config().addListener(this::configUpdated);
+        config().addListener(this);
     }
 
     private static ConfigurationMediator config() {
@@ -95,14 +96,6 @@ public class ClientGenerator implements ClockObserver {
         ticksPerClient = newValue;
     }
 
-    private void configUpdated(PropertyChangedEventArgs args) {
-        if (args.getPropertyName().equals(TICKS_PER_CLIENT)) {
-            updateSpawnRate((int) args.getNewValue());
-        } else if (args.getPropertyName().equals(MAX_AMOUNT_OF_CLIENTS)) {
-            updateMaxAmountOfClients((int) args.getNewValue());
-        }
-    }
-
     private int tickCount = 0;
 
     @Override
@@ -113,6 +106,15 @@ public class ClientGenerator implements ClockObserver {
 
         if (tickCount == 0) {
             spawnClient();
+        }
+    }
+
+    @Override
+    public void onPropertyChanged(PropertyChangedEventArgs args) {
+        if (args.getPropertyName().equals(TICKS_PER_CLIENT)) {
+            updateSpawnRate((int) args.getNewValue());
+        } else if (args.getPropertyName().equals(MAX_AMOUNT_OF_CLIENTS)) {
+            updateMaxAmountOfClients((int) args.getNewValue());
         }
     }
 }
