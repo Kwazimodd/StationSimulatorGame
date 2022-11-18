@@ -103,12 +103,12 @@ public class GameClock implements ConfigurationListener {
 
         observers.stream()
                 .filter(wr -> wr.get() == null)
-                .collect(Collectors.toList())
+                .toList()
                 .forEach(observers::remove);
 
         delayedRunners.stream()
                 .filter(PostExecuteObserver::canBeDeleted)
-                .collect(Collectors.toList())
+                .toList()
                 .forEach(delayedRunners::remove);
     }
 

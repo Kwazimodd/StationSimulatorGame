@@ -11,9 +11,11 @@ public class IsServedState extends State {
     }
 
     @Override
-    public void perform() {
+    public void onSwitchedTo() {
         customerController.onClientServiced(client);
+    }
 
-        client.changeState(new ExitState(client));
+    @Override
+    public void perform() {
     }
 }

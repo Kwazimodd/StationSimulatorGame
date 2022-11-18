@@ -49,7 +49,18 @@ public class StationController implements CustomerController, CashRegisterContro
         animController = AnimationController.getInstance();
     }
 
+    @Override
+    public void notifyCashRegisterOpened(CashRegister register) {
+        var sprite = getCashRegisterSprite(register);
+
+        sprite.setOpened();
+    }
+
     public void notifyCashRegisterClosed(CashRegister register) {
+        var sprite = getCashRegisterSprite(register);
+
+        sprite.setClosed();
+
         var clientsQueue = register.getClientsQueue();
 
         // Find backup cash register with minimum queue size.
@@ -116,7 +127,7 @@ public class StationController implements CustomerController, CashRegisterContro
         cashRegisters.put(cashRegister.getId(), cashRegister);
         GameClock.getInstance().addObserver(cashRegister);
 
-        CashRegisterSprite cashRegisterSprite = new CashRegisterSprite(cashRegister.getId(), "CashRegister200X200.png");
+        CashRegisterSprite cashRegisterSprite = new CashRegisterSprite(cashRegister.getId(), "CashRegister200X200.png", "CashRegisterBroken200X200.png");
         cashRegisterSprite.setBounds(new Rectangle(x, y, 50, 50));
         SpriteRegistry.getInstance().registerSprite(cashRegisterSprite);
         cashRegisterSprites.put(cashRegisterSprite.getId(), cashRegisterSprite);
@@ -128,18 +139,19 @@ public class StationController implements CustomerController, CashRegisterContro
         backupCashRegisters.put(cashRegister.getId(), cashRegister);
         GameClock.getInstance().addObserver(cashRegister);
 
-        CashRegisterSprite cashRegisterSprite = new CashRegisterSprite(cashRegister.getId(), "CashRegisterReserved200X200.png");
+        CashRegisterSprite cashRegisterSprite = new CashRegisterSprite(cashRegister.getId(), "CashRegisterReserved200X200.png", "CashRegisterReserved200X200.png");
         cashRegisterSprite.setBounds(new Rectangle(x, y, 50, 50));
         SpriteRegistry.getInstance().registerSprite(cashRegisterSprite);
         backupCashRegisterSprites.put(cashRegister.getId(), cashRegisterSprite);
     }
 
-    public void removeClient(Client client) {
-        var clientSprite = clientSprites.get(client.getId());
+    private void removeClient(int clientId) {
+        System.out.println("StationController.removeClient");
+        var clientSprite = clientSprites.get(clientId);
         SpriteRegistry.getInstance().removeSprite(clientSprite);
 
         clientSprites.remove(clientSprite.getId());
-        clients.remove(client.getId());
+        clients.remove(clientId);
 
         ClientGenerator.getInstance().clientCount--;
     }
@@ -264,8 +276,9 @@ public class StationController implements CustomerController, CashRegisterContro
     }
 
     @Override
-    public void onClientServiced(Client client) {
+    public void onClientServiced(final Client client) {
         var exit = getExit();
+        var clientId = client.getId();
 
         var sprite = getClientSprite(client);
 
@@ -275,6 +288,7 @@ public class StationController implements CustomerController, CashRegisterContro
                         .withBounds(sprite.getBounds().getLocation(), exit.getBounds().getLocation())
                         .withProperty((s, p) -> s.getBounds().setLocation(p))
                         .build())
+                .addOnExecutedListener(() -> removeClient(clientId))
                 .build());
     }
 }

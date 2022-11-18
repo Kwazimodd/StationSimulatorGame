@@ -8,9 +8,14 @@ public abstract class State {
     protected final Client client;
     protected final CustomerController customerController;
 
-    public State(Client client){
+    public State(Client client) {
         this.client = client;
         customerController = StationController.getInstance();
+
+        onSwitchedTo();
+    }
+
+    public void onSwitchedTo() {
     }
 
     public abstract void perform();

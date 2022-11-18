@@ -114,8 +114,7 @@ public class CashRegister implements ClockObserver, ConfigurationListener {
     public void open() {
         currentState = Open;
         if (!isBackup) {
-            // TODO: Remove sprite logic
-            controller.getCashRegisterSprite(id).setSprite(ResourceLoader.getInstance().loadImage("CashRegister200X200.png"));
+            controller.notifyCashRegisterOpened(this);
         }
     }
 
@@ -123,8 +122,6 @@ public class CashRegister implements ClockObserver, ConfigurationListener {
         currentState = Closed;
 
         if (!isBackup) {
-            // TODO: Remove sprite logic
-            controller.getCashRegisterSprite(id).setSprite(ResourceLoader.getInstance().loadImage("CashRegisterBroken200X200.png"));
             controller.notifyCashRegisterClosed(this);
         }
     }

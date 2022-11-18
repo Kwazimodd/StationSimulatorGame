@@ -5,6 +5,7 @@ import ua.pz33.rendering.animation.interpolation.Interpolator;
 import ua.pz33.rendering.animation.interpolation.Interpolators;
 import ua.pz33.sprites.Sprite;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +13,7 @@ public class Storyboard {
     private int durationMs = 100;
     private Interpolator interpolator = Interpolators.LINEAR;
     private final List<Animation> animations = new ArrayList<>();
+    private Runnable onExecuted;
 
     private Storyboard() {
 
@@ -31,6 +33,10 @@ public class Storyboard {
 
         for (var animation : animations) {
             animation.step(sprite, absoluteValue);
+        }
+
+        if (shouldFinish && onExecuted != null) {
+            EventQueue.invokeLater(onExecuted);
         }
 
         return shouldFinish;
@@ -59,6 +65,12 @@ public class Storyboard {
 
         public Builder withInterpolator(@MagicConstant(valuesFromClass = Interpolators.class) Interpolator interpolator) {
             storyboard.interpolator = interpolator;
+
+            return this;
+        }
+
+        public Builder addOnExecutedListener(Runnable onExecuted) {
+            storyboard.onExecuted = onExecuted;
 
             return this;
         }

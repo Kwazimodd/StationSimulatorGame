@@ -42,27 +42,6 @@ public class Main {
         LogMediator.getInstance().logMessage("Game started");
     }
 
-    private static void initClient(){
-        var spriteRegistry = SpriteRegistry.getInstance();
-
-        var regularDude = new ClientSprite("BodyExempt200X200.png", 15);
-        regularDude.setBounds(new Rectangle(300, 300, 90, 90));
-        //regularDude.moveTo(0, 0);
-
-        var vipDude = new ClientSprite("BodyVIP200X200.png", 15);
-        vipDude.setBounds(new Rectangle(55, 45, 90, 90));
-        //vipDude.moveTo(300, 300);
-
-        var cashRegister = new CashRegisterSprite("CashRegister200X200.png", 15);
-        cashRegister.setBounds(new Rectangle(0, 100, 90, 90));
-
-        StationController.getInstance().addCashRegister(50, 320);
-
-        //spriteRegistry.registerSprite(regularDude);
-        //spriteRegistry.registerSprite(vipDude);
-        //spriteRegistry.registerSprite(cashRegister);
-    }
-
     private static void initializeSprites() {
         var spriteRegistry = SpriteRegistry.getInstance();
         DumbCircle magentaCircle = new DumbCircle(Color.magenta);

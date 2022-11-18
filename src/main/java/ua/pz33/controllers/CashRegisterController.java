@@ -16,4 +16,6 @@ public interface CashRegisterController {
     void notifyQueueUpdated(CashRegister register);
 
     void notifyClientServiced(Client currentClient);
+
+    void notifyCashRegisterOpened(CashRegister register);
 }
