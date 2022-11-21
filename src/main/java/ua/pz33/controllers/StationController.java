@@ -277,7 +277,7 @@ public class StationController implements CustomerController, CashRegisterContro
         var sprite = getClientSprite(client);
 
         animController.beginAnimation(sprite, new Storyboard.Builder()
-                .withDuration(1_000)
+                .withDuration(800)
                 .withAnimations(new PositionAnimation.Builder()
                         .withBounds(sprite.getBounds().getLocation(), exit.getBounds().getLocation())
                         .withProperty((s, p) -> s.getBounds().setLocation(p))

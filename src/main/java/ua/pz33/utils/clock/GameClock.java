@@ -38,8 +38,6 @@ public class GameClock implements ConfigurationListener {
 
         while (true) {
             if (!isPaused) {
-                //System.out.println(System.currentTimeMillis() + " onTick()");
-
                 EventQueue.invokeLater(this::onTick);
             }
 
@@ -79,11 +77,7 @@ public class GameClock implements ConfigurationListener {
         this.observers.add(new WeakReference<>(destination));
     }
 
-    private int ticks;
-
     private void onTick() {
-        ++ticks;
-
         if (observers.isEmpty()) {
             return;
         }
@@ -118,10 +112,6 @@ public class GameClock implements ConfigurationListener {
                 .filter(PostExecuteObserver::canBeDeleted)
                 .toList()
                 .forEach(delayedRunners::remove);
-    }
-
-    public int getTicks() {
-        return ticks;
     }
 
     private static ConfigurationMediator config() {
