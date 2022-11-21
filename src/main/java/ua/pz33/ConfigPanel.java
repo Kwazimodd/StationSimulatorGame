@@ -144,10 +144,12 @@ public class ConfigPanel extends JPanel implements ConfigurationListener {
         add(maxPeopleField);
         add(new JLabel("Percent of special group peoples"));
         add(percentSpecialField);
-        add(addItemsPanel);
+
         add(save);
 
-        add(new JLabel("Select creating model:"));
+        add(new JLabel("Select an item to create:"));
+        add(addItemsPanel);
+
         add(startStopPanel);
     }
 
