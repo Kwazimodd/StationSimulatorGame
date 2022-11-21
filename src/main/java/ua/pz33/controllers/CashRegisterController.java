@@ -5,7 +5,7 @@ import ua.pz33.clients.Client;
 import ua.pz33.sprites.ImageSprite;
 
 public interface CashRegisterController {
-    boolean hasAnyOpenControllers();
+    boolean hasAnyOpenRegisters();
 
     void notifyClientBeganService(Client currentClient);
 

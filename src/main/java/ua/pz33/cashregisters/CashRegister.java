@@ -5,7 +5,6 @@ import ua.pz33.controllers.StationController;
 import ua.pz33.clients.Client;
 import ua.pz33.clients.statemachice.MovingState;
 import ua.pz33.clients.statemachice.IsBeingServicedState;
-import ua.pz33.utils.ResourceLoader;
 import ua.pz33.utils.clock.ClockObserver;
 import ua.pz33.utils.clock.GameClock;
 import ua.pz33.utils.configuration.ConfigurationListener;
@@ -14,6 +13,7 @@ import ua.pz33.utils.configuration.PropertyChangedEventArgs;
 import ua.pz33.utils.logs.LogMediator;
 
 import java.util.Comparator;
+import java.util.Objects;
 import java.util.PriorityQueue;
 import java.util.Random;
 
@@ -52,6 +52,22 @@ public class CashRegister implements ClockObserver, ConfigurationListener {
 
         addToQueueInternal(client);
 
+        controller.notifyQueueUpdated(this);
+
+        return true;
+    }
+
+    public boolean tryAddAllToQueue(Iterable<Client> clients) {
+        if (currentState.equals(Closed)) {
+            return false;
+        }
+
+        for (Client client : clients) {
+            addToQueueInternal(client);
+        }
+
+        controller.notifyQueueUpdated(this);
+
         return true;
     }
 
@@ -60,15 +76,15 @@ public class CashRegister implements ClockObserver, ConfigurationListener {
             return;
         }
 
-        boolean existOpenedCashRegisters = controller.hasAnyOpenControllers();
-
-        if (clientsQueue.isEmpty()) {
-            return;
-        }
+        boolean existOpenedCashRegisters = controller.hasAnyOpenRegisters();
 
         if (isBackup && existOpenedCashRegisters) {
             close();
 
+            return;
+        }
+
+        if (clientsQueue.isEmpty()) {
             return;
         }
 
@@ -80,6 +96,10 @@ public class CashRegister implements ClockObserver, ConfigurationListener {
         var message = String.format("Cash register %d started servicing client %d.", id, currentClient.getId());
         LogMediator.getInstance().logMessage(message);
         GameClock.getInstance().postExecute(currentClient.getCountOfTickets() * ticksToServeClient, () -> {
+            if(currentState == Closed) {
+                return;
+            }
+
             clientsQueue.poll();
 
             logClientBoughtTickets(currentClient);
@@ -113,17 +133,16 @@ public class CashRegister implements ClockObserver, ConfigurationListener {
 
     public void open() {
         currentState = Open;
-        if (!isBackup) {
-            controller.notifyCashRegisterOpened(this);
-        }
+
+        controller.notifyCashRegisterOpened(this);
     }
 
     public void close() {
         currentState = Closed;
 
-        if (!isBackup) {
-            controller.notifyCashRegisterClosed(this);
-        }
+        controller.notifyCashRegisterClosed(this);
+
+        clientsQueue.clear();
     }
 
     public boolean isOpen() {
@@ -132,7 +151,7 @@ public class CashRegister implements ClockObserver, ConfigurationListener {
 
     public void makeBackup() {
         isBackup = true;
-        close();
+        GameClock.getInstance().postExecute(1, this::close);
     }
 
     public int getId() {
@@ -153,6 +172,8 @@ public class CashRegister implements ClockObserver, ConfigurationListener {
                 LogMediator.getInstance().logMessage("Cashregiser " + id + " was broken.");
                 close();
                 GameClock.getInstance().postExecute(50, this::open);
+
+                return;
             } else {
                 triedClose = true;
                 GameClock.getInstance().postExecute(100, () -> triedClose = false);
@@ -171,10 +192,7 @@ public class CashRegister implements ClockObserver, ConfigurationListener {
         clientsQueue.add(client);
         client.setCashRegister(this);
         client.changeState(new MovingState(client));
-
-        controller.notifyQueueUpdated(this);
     }
-
 
     private static ConfigurationMediator config() {
         return ConfigurationMediator.getInstance();
@@ -189,5 +207,10 @@ public class CashRegister implements ClockObserver, ConfigurationListener {
         if (args.getPropertyName().equals(TICKS_PER_SERVICE)) {
             updateServiceTime((int) args.getNewValue());
         }
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

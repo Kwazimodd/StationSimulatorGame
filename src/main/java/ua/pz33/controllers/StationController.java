@@ -12,13 +12,14 @@ import ua.pz33.sprites.CashRegisterSprite;
 import ua.pz33.sprites.ClientSprite;
 import ua.pz33.sprites.Entrance;
 import ua.pz33.sprites.Exit;
+import ua.pz33.utils.clock.ClockObserver;
 import ua.pz33.utils.clock.GameClock;
 
 import java.awt.*;
 import java.util.List;
 import java.util.*;
 
-public class StationController implements CustomerController, CashRegisterController {
+public class StationController implements CustomerController, CashRegisterController, ClockObserver {
     private static final int SPRITE_SIZE = 50;
     private static final int SPRITE_SPACING_X = -15;
     private static final int SPRITE_SPACING_Y = 0;
@@ -27,10 +28,11 @@ public class StationController implements CustomerController, CashRegisterContro
 
     private final AnimationController animController;
 
+    private final Set<CashRegister> registersToLayoutOnNextTick = new HashSet<>();
+
     private final Map<Integer, CashRegister> cashRegisters = new HashMap<>();
     private final Map<Integer, CashRegisterSprite> cashRegisterSprites = new HashMap<>();
     private final Map<Integer, CashRegister> backupCashRegisters = new HashMap<>();
-    private final Map<Integer, CashRegisterSprite> backupCashRegisterSprites = new HashMap<>();
     private final List<Entrance> entrances = new ArrayList<>();
     private final Map<Integer, Client> clients = new HashMap<>();
     private final Map<Integer, ClientSprite> clientSprites = new HashMap<>();
@@ -47,6 +49,7 @@ public class StationController implements CustomerController, CashRegisterContro
 
     private StationController() {
         animController = AnimationController.getInstance();
+        GameClock.getInstance().addObserver(this);
     }
 
     @Override
@@ -63,18 +66,21 @@ public class StationController implements CustomerController, CashRegisterContro
 
         var clientsQueue = register.getClientsQueue();
 
+        if (clientsQueue.isEmpty()) {
+            return;
+        }
+
         // Find backup cash register with minimum queue size.
-        Optional<CashRegister> bestBackupCashRegister = backupCashRegisters.values().stream().min(
-                Comparator.comparingInt(cashRegister -> cashRegister.getClientsQueue().size()));
+        Optional<CashRegister> bestBackupCashRegister = backupCashRegisters.values().stream()
+                .filter(r -> r != register)         // skip current backup register, reference equals is required
+                .min(Comparator.comparingInt(cashRegister -> cashRegister.getClientsQueue().size()));
 
         if (bestBackupCashRegister.isEmpty()) {
             clientsQueue.forEach(client -> client.tryChooseCashRegister(cashRegisters.values()));
         } else {
             bestBackupCashRegister.get().open();
-            clientsQueue.forEach(bestBackupCashRegister.get()::tryAddToQueue);
+            bestBackupCashRegister.get().tryAddAllToQueue(clientsQueue.stream().toList());
         }
-
-        clientsQueue.clear();
     }
 
     public void addClient(Client client, Point entrance) {
@@ -142,12 +148,16 @@ public class StationController implements CustomerController, CashRegisterContro
         CashRegisterSprite cashRegisterSprite = new CashRegisterSprite(cashRegister.getId(), "CashRegisterReserved200X200.png", "CashRegisterReserved200X200.png");
         cashRegisterSprite.setBounds(new Rectangle(x, y, 50, 50));
         SpriteRegistry.getInstance().registerSprite(cashRegisterSprite);
-        backupCashRegisterSprites.put(cashRegister.getId(), cashRegisterSprite);
+        cashRegisterSprites.put(cashRegister.getId(), cashRegisterSprite);
     }
 
     private void removeClient(int clientId) {
-        System.out.println("StationController.removeClient");
         var clientSprite = clientSprites.get(clientId);
+        if (clientSprite == null) {
+            System.err.println("Client sprite is null");
+
+            return;
+        }
         SpriteRegistry.getInstance().removeSprite(clientSprite);
 
         clientSprites.remove(clientSprite.getId());
@@ -169,10 +179,6 @@ public class StationController implements CustomerController, CashRegisterContro
         return backupCashRegisters.values();
     }
 
-    public Collection<CashRegisterSprite> getBackupCashRegisterSprites() {
-        return backupCashRegisterSprites.values();
-    }
-
     public CashRegister getCashRegister(int id) {
         return cashRegisters.get(id);
     }
@@ -182,7 +188,7 @@ public class StationController implements CustomerController, CashRegisterContro
     }
 
     @Override
-    public boolean hasAnyOpenControllers() {
+    public boolean hasAnyOpenRegisters() {
         return cashRegisters.values().stream().anyMatch(CashRegister::isOpen);
     }
 
@@ -200,16 +206,12 @@ public class StationController implements CustomerController, CashRegisterContro
         return cashRegisterSprites.get(id);
     }
 
-    public CashRegisterSprite getBackupCashRegisterSprite(int id) {
-        return backupCashRegisterSprites.get(id);
+    public CashRegisterSprite getCashRegisterSprite(CashRegister register) {
+        return cashRegisterSprites.get(register.getId());
     }
 
     public void notifyQueueUpdated(CashRegister register) {
-        ArrayList<ClientSprite> clients = getQueueCopy(register.getClientsQueue());
-
-        var crSprite = register.isBackup() ? getBackupCashRegisterSprite(register) : getCashRegisterSprite(register);
-
-        layoutCashRegister(crSprite, clients);
+        registersToLayoutOnNextTick.add(register);
     }
 
     @NotNull
@@ -226,14 +228,6 @@ public class StationController implements CustomerController, CashRegisterContro
 
     private ClientSprite getClientSprite(Client client) {
         return getClientSprite(client.getId());
-    }
-
-    private CashRegisterSprite getCashRegisterSprite(CashRegister register) {
-        return getCashRegisterSprite(register.getId());
-    }
-
-    private CashRegisterSprite getBackupCashRegisterSprite(CashRegister register) {
-        return getBackupCashRegisterSprite(register.getId());
     }
 
     private void layoutCashRegister(CashRegisterSprite register, List<ClientSprite> clients) {
@@ -290,5 +284,26 @@ public class StationController implements CustomerController, CashRegisterContro
                         .build())
                 .addOnExecutedListener(() -> removeClient(clientId))
                 .build());
+    }
+
+    @Override
+    public void onTick() {
+        layoutCashRegisters();
+    }
+
+    private void layoutCashRegisters() {
+        if (registersToLayoutOnNextTick.isEmpty()) {
+            return;
+        }
+
+        for (CashRegister register : registersToLayoutOnNextTick) {
+            ArrayList<ClientSprite> clients = getQueueCopy(register.getClientsQueue());
+
+            var crSprite = getCashRegisterSprite(register);
+
+            layoutCashRegister(crSprite, clients);
+        }
+
+        registersToLayoutOnNextTick.clear();
     }
 }

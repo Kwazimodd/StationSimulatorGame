@@ -20,6 +20,7 @@ public class Client implements ClockObserver {
     private Integer id;
     private final Integer countOfTickets;
     private final ClientStatus status;
+    private final StationController stationController = StationController.getInstance();
     private State currentState;
     private Point goalPoint;
     private CashRegister cashRegister;
@@ -54,14 +55,12 @@ public class Client implements ClockObserver {
 
         List<CashRegisterSprite> openedCashRegisterSprites = new ArrayList<>();
 
-        filteredCashRegisters.forEach(c -> openedCashRegisterSprites.add(isBackup
-                ? StationController.getInstance().getBackupCashRegisterSprite(c.getId())
-                : StationController.getInstance().getCashRegisterSprite(c.getId())));
+        filteredCashRegisters.forEach(c -> openedCashRegisterSprites.add(stationController.getCashRegisterSprite(c.getId())));
 
         var closestCashRegisterSprite = openedCashRegisterSprites.stream().min(closestCashRegisterComparator).get();
         var bestCashRegister = isBackup
-                ? StationController.getInstance().getBackupCashRegister(closestCashRegisterSprite.getId())
-                : StationController.getInstance().getCashRegister(closestCashRegisterSprite.getId());
+                ? stationController.getBackupCashRegister(closestCashRegisterSprite.getId())
+                : stationController.getCashRegister(closestCashRegisterSprite.getId());
 
         return bestCashRegister.tryAddToQueue(this);
     }
