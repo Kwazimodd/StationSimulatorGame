@@ -260,7 +260,7 @@ public class StationController implements CustomerController, CashRegisterContro
             }
 
             animController.beginAnimation(client, new Storyboard.Builder()
-                    .withDuration(1_000)
+                    .withDuration(600)
                     .withAnimations(new PositionAnimation.Builder()
                             .withBounds(src, dest)
                             .withProperty((s, p) -> s.getBounds().setLocation(p))

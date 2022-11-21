@@ -39,7 +39,7 @@ public class CashRegister implements ClockObserver, ConfigurationListener {
     public CashRegister() {
         currentState = Open;
         id = CashRegisterId++;
-        ticksToServeClient = config().getValueOrDefault(TICKS_PER_SERVICE, 5);
+        ticksToServeClient = config().getValueOrDefault(TICKS_PER_SERVICE, 10);
 
         config().addListener(this);
         controller = StationController.getInstance();
