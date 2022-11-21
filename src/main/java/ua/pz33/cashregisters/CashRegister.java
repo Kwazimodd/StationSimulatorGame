@@ -95,7 +95,7 @@ public class CashRegister implements ClockObserver, ConfigurationListener {
 
         var message = String.format("Cash register %d started servicing client %d.", id, currentClient.getId());
         LogMediator.getInstance().logMessage(message);
-        GameClock.getInstance().postExecute(currentClient.getCountOfTickets() * ticksToServeClient, () -> {
+        GameClock.getInstance().postExecute(getServiceDelay(currentClient), () -> {
             if(currentState == Closed) {
                 return;
             }
@@ -108,6 +108,10 @@ public class CashRegister implements ClockObserver, ConfigurationListener {
             controller.notifyClientServiced(currentClient);
             controller.notifyQueueUpdated(this);
         });
+    }
+
+    private int getServiceDelay(Client currentClient) {
+        return (1 + currentClient.getCountOfTickets() / 2) * ticksToServeClient;
     }
 
     public PriorityQueue<Client> getClientsQueue() {
