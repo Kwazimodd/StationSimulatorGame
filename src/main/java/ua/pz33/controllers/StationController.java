@@ -5,9 +5,7 @@ import ua.pz33.cashregisters.CashRegister;
 import ua.pz33.clients.Client;
 import ua.pz33.generators.ClientGenerator;
 import ua.pz33.rendering.SpriteRegistry;
-import ua.pz33.rendering.animation.AnimationController;
-import ua.pz33.rendering.animation.PositionAnimation;
-import ua.pz33.rendering.animation.Storyboard;
+import ua.pz33.rendering.animation.*;
 import ua.pz33.sprites.CashRegisterSprite;
 import ua.pz33.sprites.ClientSprite;
 import ua.pz33.sprites.Entrance;
@@ -259,12 +257,17 @@ public class StationController implements CustomerController, CashRegisterContro
                 continue;
             }
 
-            animController.beginAnimation(client, new Storyboard.Builder()
-                    .withDuration(1_000)
-                    .withAnimations(new PositionAnimation.Builder()
+            Client clientModel = getClient(client.getId());
+
+            clientModel.onMoving();
+
+            animController.beginAnimation(client, new VelocityStoryboard.Builder()
+                    .withAnimations(new VelocityPositionAnimation.Builder()
+                            .withVelocity(300)
                             .withBounds(src, dest)
                             .withProperty((s, p) -> s.getBounds().setLocation(p))
                             .build())
+                            .addOnExecutedListener(clientModel::onReadyToBeServed)
                     .build());
         }
     }
@@ -276,7 +279,7 @@ public class StationController implements CustomerController, CashRegisterContro
 
         var sprite = getClientSprite(client);
 
-        animController.beginAnimation(sprite, new Storyboard.Builder()
+        animController.beginAnimation(sprite, new TimedStoryboard.Builder()
                 .withDuration(1_000)
                 .withAnimations(new PositionAnimation.Builder()
                         .withBounds(sprite.getBounds().getLocation(), exit.getBounds().getLocation())

@@ -1,14 +1,11 @@
 package ua.pz33.clients;
 
-import ua.pz33.clients.statemachice.IsBeingServicedState;
-import ua.pz33.clients.statemachice.IsServedState;
+import ua.pz33.clients.statemachice.*;
 import ua.pz33.controllers.StationController;
 import ua.pz33.cashregisters.CashRegister;
 import ua.pz33.sprites.CashRegisterSprite;
 import ua.pz33.utils.DistanceCounter;
 import ua.pz33.utils.clock.ClockObserver;
-import ua.pz33.clients.statemachice.IdleState;
-import ua.pz33.clients.statemachice.State;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -119,6 +116,14 @@ public class Client implements ClockObserver {
 
     public void setCashRegister(CashRegister cashRegister) {
         this.cashRegister = cashRegister;
+    }
+
+    public void onReadyToBeServed() {
+        changeState(new ReadyForServiceState(this));
+    }
+
+    public void onMoving() {
+        changeState(new MovingState(this));
     }
 }
 

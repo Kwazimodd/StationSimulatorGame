@@ -20,6 +20,8 @@ public class AnimationController {
 
     public void beginAnimation(Sprite onSprite, Storyboard storyboard) {
         activeAnimations.add(new AnimationRecord(onSprite, storyboard));
+
+        System.out.println("Anim count: " + activeAnimations.size());
     }
 
     public void animationStep() {

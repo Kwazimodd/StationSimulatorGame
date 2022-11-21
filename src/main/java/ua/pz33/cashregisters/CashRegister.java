@@ -1,5 +1,6 @@
 package ua.pz33.cashregisters;
 
+import ua.pz33.clients.statemachice.ReadyForServiceState;
 import ua.pz33.controllers.CashRegisterController;
 import ua.pz33.controllers.StationController;
 import ua.pz33.clients.Client;
@@ -88,9 +89,14 @@ public class CashRegister implements ClockObserver, ConfigurationListener {
             return;
         }
 
+        var currentClient = clientsQueue.peek();
+
+        if (!(currentClient.getCurrentState() instanceof ReadyForServiceState)) {
+            return;
+        }
+
         currentState = Servicing;
 
-        var currentClient = clientsQueue.peek();
         controller.notifyClientBeganService(currentClient);
 
         var message = String.format("Cash register %d started servicing client %d.", id, currentClient.getId());
