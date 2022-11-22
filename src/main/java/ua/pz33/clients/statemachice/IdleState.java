@@ -1,10 +1,11 @@
 package ua.pz33.clients.statemachice;
 
-import ua.pz33.controllers.StationController;
+import ua.pz33.StationController;
 import ua.pz33.cashregisters.CashRegister;
 import ua.pz33.clients.Client;
 
 import java.util.Collection;
+import java.util.List;
 
 public class IdleState extends State {
     public IdleState(Client client) {

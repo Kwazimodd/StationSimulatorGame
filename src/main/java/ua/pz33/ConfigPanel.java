@@ -1,6 +1,5 @@
 package ua.pz33;
 
-import ua.pz33.controllers.StationController;
 import ua.pz33.rendering.GameCanvas;
 import ua.pz33.sprites.Entrance;
 import ua.pz33.utils.configuration.ConfigurationListener;
@@ -144,12 +143,10 @@ public class ConfigPanel extends JPanel implements ConfigurationListener {
         add(maxPeopleField);
         add(new JLabel("Percent of special group peoples"));
         add(percentSpecialField);
-
+        add(addItemsPanel);
         add(save);
 
-        add(new JLabel("Select an item to create:"));
-        add(addItemsPanel);
-
+        add(new JLabel("Select creating model:"));
         add(startStopPanel);
     }
 
