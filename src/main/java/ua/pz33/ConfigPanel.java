@@ -48,7 +48,7 @@ public class ConfigPanel extends JPanel implements ConfigurationListener {
 
         //Another configuration fields
         //Time of service
-        JTextField serviceTimeField = new JTextField("40");
+        JTextField serviceTimeField = new JTextField("10");
         serviceTimeField.setAlignmentX(LEFT_ALIGNMENT);
         serviceTimeField.setMaximumSize(new Dimension(Integer.MAX_VALUE, ticksPerClientField.getPreferredSize().height));
         save.addActionListener(e -> configs().setValue(TICKS_PER_SERVICE, Integer.parseInt(serviceTimeField.getText())));
@@ -58,12 +58,6 @@ public class ConfigPanel extends JPanel implements ConfigurationListener {
         maxPeopleField.setAlignmentX(LEFT_ALIGNMENT);
         maxPeopleField.setMaximumSize(new Dimension(Integer.MAX_VALUE, ticksPerClientField.getPreferredSize().height));
         save.addActionListener(e -> configs().setValue(MAX_AMOUNT_OF_CLIENTS, Integer.parseInt(maxPeopleField.getText())));
-
-        //% of people in special group
-        JTextField percentSpecialField = new JTextField("5");
-        percentSpecialField.setAlignmentX(LEFT_ALIGNMENT);
-        percentSpecialField.setMaximumSize(new Dimension(Integer.MAX_VALUE, ticksPerClientField.getPreferredSize().height));
-
 
         JTextField xCoordinateField = new JTextField("");
         xCoordinateField.setAlignmentX(LEFT_ALIGNMENT);
@@ -142,8 +136,6 @@ public class ConfigPanel extends JPanel implements ConfigurationListener {
         add(serviceTimeField);
         add(new JLabel("Max amount of people in the station"));
         add(maxPeopleField);
-        add(new JLabel("Percent of special group peoples"));
-        add(percentSpecialField);
 
         add(save);
 

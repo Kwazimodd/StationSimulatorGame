@@ -25,6 +25,7 @@ public class ImageSprite extends Sprite {
     @Override
     public void paint(Graphics graphics) {
         Graphics2D g = (Graphics2D) graphics.create();
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 
         g.drawImage(spriteImage, getX(), getY(), getWidth(), getHeight(), null);
 
