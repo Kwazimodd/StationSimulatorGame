@@ -29,14 +29,13 @@ public class AnimationController {
 
         int deletedCount = 0;
 
-        int animCount = activeAnimations.size();
-        for (int i = 0; i < animCount - deletedCount; i++) {
+        for (int i = 0; i < activeAnimations.size() - deletedCount; i++) {
             var animationRecord = activeAnimations.get(i);
 
             var animationFinished = animationRecord.storyboard.step(animationRecord.sprite, animationRecord.deltaMs());
 
             if (animationFinished) {
-                activeAnimations.remove(i);
+                activeAnimations.remove(animationRecord);
 
                 deletedCount++;
 

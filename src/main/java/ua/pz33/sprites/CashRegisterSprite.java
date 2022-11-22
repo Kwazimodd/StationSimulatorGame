@@ -1,20 +1,20 @@
 package ua.pz33.sprites;
 
-import ua.pz33.utils.ResourceLoader;
-
-import java.awt.*;
 import java.awt.image.RescaleOp;
 
 public class CashRegisterSprite extends ImageSprite {
-    private final int id;
+    private int id;
 
-    private final Image openedImage, closedImage;
+    public CashRegisterSprite(String image) {
+        super(image);
+    }
 
-    public CashRegisterSprite(int id, String openedImage, String closedImage) {
-        super(openedImage);
+    public CashRegisterSprite(String image ,int zIndex) {
+        super(image, zIndex);
+    }
 
-        this.openedImage = super.spriteImage;
-        this.closedImage = ResourceLoader.getInstance().loadImage(closedImage);
+    public CashRegisterSprite(int id, String image) {
+        super(image);
         this.id = id;
     }
 
@@ -22,11 +22,7 @@ public class CashRegisterSprite extends ImageSprite {
         return id;
     }
 
-    public void setOpened() {
-        setImage(openedImage);
-    }
+    public void test(){
 
-    public void setClosed() {
-        setImage(closedImage);
     }
 }
