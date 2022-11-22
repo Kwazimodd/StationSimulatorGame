@@ -1,13 +1,9 @@
 package ua.pz33;
 
+import ua.pz33.controllers.StationController;
 import ua.pz33.generators.ClientGenerator;
 import ua.pz33.rendering.RenderTimer;
 import ua.pz33.rendering.SpriteRegistry;
-import ua.pz33.rendering.animation.AnimationController;
-import ua.pz33.rendering.animation.IntAnimation;
-import ua.pz33.rendering.animation.PositionAnimation;
-import ua.pz33.rendering.animation.Storyboard;
-import ua.pz33.rendering.animation.interpolation.Interpolators;
 import ua.pz33.sprites.*;
 import ua.pz33.utils.clock.GameClock;
 import ua.pz33.utils.configuration.ConfigurationMediator;
@@ -44,27 +40,6 @@ public class Main {
         GameClock.getInstance().startTimer();
 
         LogMediator.getInstance().logMessage("Game started");
-    }
-
-    private static void initClient(){
-        var spriteRegistry = SpriteRegistry.getInstance();
-
-        var regularDude = new ClientSprite("BodyExempt200X200.png", 15);
-        regularDude.setBounds(new Rectangle(300, 300, 90, 90));
-        //regularDude.moveTo(0, 0);
-
-        var vipDude = new ClientSprite("BodyVIP200X200.png", 15);
-        vipDude.setBounds(new Rectangle(55, 45, 90, 90));
-        //vipDude.moveTo(300, 300);
-
-        var cashRegister = new CashRegisterSprite("CashRegister200X200.png", 15);
-        cashRegister.setBounds(new Rectangle(0, 100, 90, 90));
-
-        StationController.getInstance().addCashRegister(50, 320);
-
-        //spriteRegistry.registerSprite(regularDude);
-        //spriteRegistry.registerSprite(vipDude);
-        //spriteRegistry.registerSprite(cashRegister);
     }
 
     private static void initializeSprites() {

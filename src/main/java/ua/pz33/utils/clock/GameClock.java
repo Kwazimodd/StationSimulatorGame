@@ -5,6 +5,7 @@ import ua.pz33.utils.configuration.ConfigurationMediator;
 import ua.pz33.utils.configuration.PropertyChangedEventArgs;
 
 import java.awt.*;
+import java.awt.desktop.SystemEventListener;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,7 +34,7 @@ public class GameClock implements ConfigurationListener {
 
     @SuppressWarnings("BusyWait")
     private void clockThreadRun() {
-        long currMillis = System.currentTimeMillis() - 100;
+        long currMillis = System.currentTimeMillis() - 1000 / TICKS_PER_SECOND;
 
         while (true) {
             if (!isPaused) {
@@ -91,6 +92,7 @@ public class GameClock implements ConfigurationListener {
             try {
                 observer.onTick();
             } catch (Exception ignored) {
+                ignored.printStackTrace();
             }
         }
 
@@ -103,12 +105,12 @@ public class GameClock implements ConfigurationListener {
 
         observers.stream()
                 .filter(wr -> wr.get() == null)
-                .collect(Collectors.toList())
+                .toList()
                 .forEach(observers::remove);
 
         delayedRunners.stream()
                 .filter(PostExecuteObserver::canBeDeleted)
-                .collect(Collectors.toList())
+                .toList()
                 .forEach(delayedRunners::remove);
     }
 

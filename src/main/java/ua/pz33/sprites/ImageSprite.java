@@ -1,10 +1,5 @@
 package ua.pz33.sprites;
 
-import ua.pz33.rendering.animation.AnimationController;
-import ua.pz33.rendering.animation.IntAnimation;
-import ua.pz33.rendering.animation.Storyboard;
-import ua.pz33.rendering.animation.interpolation.Interpolators;
-import ua.pz33.utils.DistanceCounter;
 import ua.pz33.utils.ResourceLoader;
 
 import java.awt.*;
@@ -36,7 +31,7 @@ public class ImageSprite extends Sprite {
         g.dispose();
     }
 
-    public void setSprite(Image image)
+    protected void setImage(Image image)
     {
         spriteImage = image;
     }
