@@ -145,8 +145,9 @@ public class StationController implements CustomerController, CashRegisterContro
         backupCashRegisters.put(cashRegister.getId(), cashRegister);
         GameClock.getInstance().addObserver(cashRegister);
 
-        CashRegisterSprite cashRegisterSprite = new CashRegisterSprite(cashRegister.getId(), "CashRegisterReserved200X200.png", "CashRegisterReserved200X200.png");
+        CashRegisterSprite cashRegisterSprite = new CashRegisterSprite(cashRegister.getId(), "CashRegisterReserved200X200.png", "CashRegisterReservedBroken200X200.png");
         cashRegisterSprite.setBounds(new Rectangle(x, y, 50, 50));
+        cashRegisterSprite.setClosed();
         SpriteRegistry.getInstance().registerSprite(cashRegisterSprite);
         cashRegisterSprites.put(cashRegister.getId(), cashRegisterSprite);
     }
